@@ -49,8 +49,8 @@
                     </div>
                 </div>
 
-                <div id="marketField" class="mb-4 d-none">
-                    <label class="form-label">Market Name</label>
+                <div id="marketField" class="mb-4">
+                    <label class="form-label" id="nameLabel">Full Name</label>
                     <input type="text" class="form-control">
                 </div>
 
@@ -65,11 +65,11 @@
     <script>
         function toggleRole() {
             const isMarket = document.getElementById('market').checked;
-            const marketField = document.getElementById('marketField');
+            const nameLabel = document.getElementById('nameLabel');
             if (isMarket) {
-                marketField.classList.remove('d-none');
+                nameLabel.innerHTML = "Market Name";
             } else {
-                marketField.classList.add('d-none');
+                nameLabel.innerHTML = "Full Name";
             }
         }
     </script>
