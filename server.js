@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 
 const app = express();
+app.use(express.static("public"))
 
 const PORT = process.env.APP_PORT || 3000;
 
