@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: market_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      # Eğer 3306 doluysa .env dosyasından DB_PORT'u değiştirebilirsiniz
+      - "${DB_EXTERNAL_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: market_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      # Root girişi için gerekli
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "${PMA_PORT}:80"
+    depends_on:
+      - db
+
+  app:
+    build: .
+    container_name: market_backend
+    ports:
+      - "${APP_PORT}:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=3306
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
