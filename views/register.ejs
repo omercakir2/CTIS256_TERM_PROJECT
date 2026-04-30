@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body class="bg-primary bg-gradient d-flex align-items-center justify-content-center min-vh-100 py-5">
+
+    <div class="card shadow border-0 rounded-5 p-4" style="width: 100%; max-width: 550px;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Register</h2>
+            <form>
+                <div class="row g-2 mb-4">
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="role" id="consumer" value="consumer" checked onchange="toggleRole()">
+                        <label class="btn btn-outline-secondary w-100 py-3" for="consumer">Consumer</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="role" id="market" value="market" onchange="toggleRole()">
+                        <label class="btn btn-outline-secondary w-100 py-3" for="market">Market</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control">
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">District</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div id="marketField" class="mb-4 d-none">
+                    <label class="form-label">Market Name</label>
+                    <input type="text" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">Create Account</button>
+                <div class="text-center">
+                    <a href="" class="text-success text-decoration-none small">Log In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleRole() {
+            const isMarket = document.getElementById('market').checked;
+            const marketField = document.getElementById('marketField');
+            if (isMarket) {
+                marketField.classList.remove('d-none');
+            } else {
+                marketField.classList.add('d-none');
+            }
+        }
+    </script>
+</body>
+</html>
