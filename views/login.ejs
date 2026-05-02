@@ -10,18 +10,18 @@
     <div class="card shadow border-0 rounded-5 p-4" style="width: 100%; max-width: 400px;">
         <div class="card-body">
             <h2 class="text-center mb-4">Login</h2>
-            <form>
+            <form method="POST" action="/login">
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control">
+                    <input type="email" class="form-control" name="email" value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
                 </div>
                 <div class="mb-4">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-control">
+                    <input type="password" class="form-control" name="password" value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
                 </div>
                 <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">Log In</button>
                 <div class="text-center">
-                    <a href="" class="text-success text-decoration-none small">Sign Up</a>
+                    <a href="/register" class="text-success text-decoration-none small">Sign Up</a>
                 </div>
             </form>
         </div>

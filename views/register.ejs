@@ -10,7 +10,7 @@
     <div class="card shadow border-0 rounded-5 p-4" style="width: 100%; max-width: 550px;">
         <div class="card-body">
             <h2 class="text-center mb-4">Register</h2>
-            <form>
+            <form method="POST" action="/register">
                 <div class="row g-2 mb-4">
                     <div class="col-6">
                         <input type="radio" class="btn-check" name="role" id="consumer" value="consumer" checked onchange="toggleRole()">
@@ -24,39 +24,39 @@
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control">
+                    <input type="email" class="form-control" name="email" value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" name="password" value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" name="confirmPassword" value="<%= typeof formData !== 'undefined' ? formData.confirmPassword : '' %>">
                     </div>
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">City</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="city" value="<%= typeof formData !== 'undefined' ? formData.city : '' %>">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">District</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="district" value="<%= typeof formData !== 'undefined' ? formData.district : '' %>">
                     </div>
                 </div>
 
                 <div id="marketField" class="mb-4">
                     <label class="form-label" id="nameLabel">Full Name</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" name="name" value="<%= typeof formData !== 'undefined' ? formData.name : '' %>">
                 </div>
 
                 <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">Create Account</button>
                 <div class="text-center">
-                    <a href="" class="text-success text-decoration-none small">Log In</a>
+                    <a href="/login" class="text-success text-decoration-none small">Log In</a>
                 </div>
             </form>
         </div>
