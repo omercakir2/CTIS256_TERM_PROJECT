@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <header class="m_navbar">
+        <div class="m_nav_name">
+            <div class="m_name">Sustainable Discount Marketplace</div>
+            <div class="m_img_cont"><img src="img/leaf.png" alt="leaf" class="m_img"></div>
+        </div>
+        <div class="m_nav_func">
+            <a class="m_dash active" href="#">Dashboard</a>
+            <a class="m_prod" href="/market/addproduct">Add Products</a>
+            <a id="m_prof" href="/profile?user=market">
+                <div class="m_img_cont"><img src="img/userupdt.png" alt="user" class="m_img"></div>
+                <div class="prof_name">Profile</div>
+            </a>
+            <a class="m_logout" href="/logout">Logout</a>
+        </div>
+    </header>
+
+    <main class="m_dashboard">
+        <div class="m_info">
+            <div id="m_box_welc">
+                <div class="m_box_img_cont"><img src="img/box.png" alt="box" class="m_img"></div>
+                <h2>Market Dashboard</h2>
+            </div>
+            <div class="m_info_welc">
+                <span>Welcome Back, <span id="m_info_name">ABCDEF MARKET</span>! Manage your inventory below.</span>
+            </div>
+            
+            <div class="m_pro_num_info">
+                <div class="m_stat_card">
+                    <div class="m_stat_number text-green">6</div>
+                    <div class="m_stat_label">TOTAL PRODUCTS</div>
+                </div>
+                <div class="m_stat_card">
+                    <div class="m_stat_number text-green">6</div>
+                    <div class="m_stat_label">ACTIVE</div>
+                </div>
+                <div class="m_stat_card">
+                    <div class="m_stat_number text-red" id="m_stat_expired">0</div>
+                    <div class="m_stat_label">EXPIRED</div>
+                </div>
+                <div class="m_stat_card">
+                    <div class="m_stat_number text-blue">90</div>
+                    <div class="m_stat_label">TOTAL STOCK</div>
+                </div>
+            </div>
+            
+            <div id="pro_inf_label"><h3>Your Products</h3></div>
+        </div>
+
+        <div class="m_products">
+            <table>
+                <thead class="m_pro_head">
+                    <tr>
+                        <th>IMAGE</th>
+                        <th>TITLE</th>
+                        <th>STOCK</th>
+                        <th>PRICE</th>
+                        <th>DISCOUNTED</th>
+                        <th>EXPIRES</th>
+                        <th>STATUS</th>
+                        <th class="m_action_head">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="expired_row">
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td class="text-red font-medium">30/04/2026</td>
+                        <td><span class="m_pro_expired">Expired</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="m_img_cont m_prod_img"><img src="img/question.jpg" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium">Toblerone</td>
+                        <td>25</td>
+                        <td class="text-gray">₺25.00</td>
+                        <td class="text-success font-medium">₺14.00</td>
+                        <td>30/05/2026</td>
+                        <td><span class="m_pro_active">Active</span></td>
+                        <td>
+                            <div class="m_action_container">
+                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="img/delete.png" alt="delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
