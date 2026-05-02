@@ -3,6 +3,8 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import db from './db.js';
 import session from 'express-session';
+import { body, validationResult } from 'express-validator';
+
 
 const app = express();
 
@@ -11,6 +13,19 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+const registerValidation = [
+    body('email').isEmail().withMessage('Invalid email format!'),
+    body('password').notEmpty().withMessage('Password cannot be empty.'),
+    body('name').notEmpty().withMessage('Name cannot be empty'),
+    body('city').notEmpty().withMessage('City cannot be empty'),
+    body('district').notEmpty().withMessage('District cannot be empty')
+];
+
+const loginValidation = [
+    body('email').isEmail().withMessage('Invalid email format!'),
+    body('password').notEmpty().withMessage('Password cannot be empty.')
+];
 
 app.use(express.static("public"))
 app.set("view engine","ejs")
@@ -26,7 +41,12 @@ app.get('/login',(req,res)=>{
 })
 
 
-app.post('/login', async (req,res)=>{
+app.post('/login', loginValidation, async (req,res)=>{
+
+const errors = validationResult(req);
+if (!errors.isEmpty()) {
+    return res.render('login', { error: errors.array()[0].msg, formData: req.body });
+}
 
 
 const email = req.body.email.trim();
@@ -81,7 +101,12 @@ app.get('/register', (req, res) => {
     res.render('register', { error: null, formData: {} });
 });
 
-app.post('/register', async (req,res)=>{
+app.post('/register', registerValidation, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.render('register', { error: errors.array()[0].msg, formData: req.body });
+    }
+
     try {
         const { email, password, confirmPassword, role, name, city, district } = req.body;
 
@@ -105,7 +130,10 @@ app.post('/register', async (req,res)=>{
         console.error("Register Hatası:", error);
         
         if (error.code === 'ER_DUP_ENTRY') {
-            return res.send('<script>alert("Bu email zaten kayıtlı!"); window.location="/register";</script>');
+            return res.render('register', { 
+            error: "This email is already registered!", 
+            formData: req.body 
+        });
         }
         res.status(500).send("Sunucu hatası oluştu.");
     }
