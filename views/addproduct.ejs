@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Sustainable Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="addproduct.css">
+</head>
+<body>
+    <header class="m_navbar">
+        <div class="m_nav_name">
+            <div class="m_name">Sustainable Discount Marketplace</div>
+            <div class="m_img_cont"><img src="img/leaf.png" alt="leaf" class="m_img"></div>
+        </div>
+        <div class="m_nav_func">
+            <a class="m_dash" href="/market/dashboard">Dashboard</a>
+            <a class="m_prod active" href="/market/addproduct">Add Products</a>
+            <a id="m_prof" href="/profile?user=market">
+                <div class="m_img_cont"><img src="img/userupdt.png" alt="user" class="m_img"></div>
+                <div class="prof_name">Profile</div>
+            </a>
+            <a class="m_logout" href="/logout">Logout</a>
+        </div>
+    </header>
+
+    <main class="m_add_container">
+        <div class="m_add_header">
+            <h2>Add New Product</h2>
+            <p>Fill in the details below to add a new sustainable product to your inventory.</p>
+        </div>
+
+        <form action="/addproduct" method="POST" enctype="multipart/form-data" class="m_add_form" name="m_add_page">
+            
+            <div class="m_form_row">
+                <div class="m_form_group">
+                    <label for="product_title">Product Title</label>
+                    <input type="text" id="product_title" name="product_title" placeholder="e.g. Organic Tomatoes" required>
+                </div>
+                <div class="m_form_group">
+                    <label for="product_stock">Stock Quantity</label>
+                    <input type="number" id="product_stock" name="product_stock" placeholder="e.g. 50" min="1" required>
+                </div>
+            </div>
+
+            <div class="m_form_row">
+                <div class="m_form_group">
+                    <label for="original_price">Original Price (₺)</label>
+                    <input type="number" id="original_price" name="original_price" placeholder="0.00" step="0.01" required>
+                </div>
+                <div class="m_form_group">
+                    <label for="discounted_price">Discounted Price (₺)</label>
+                    <input type="number" id="discounted_price" name="discounted_price" placeholder="0.00" step="0.01" required>
+                </div>
+                <div class="m_form_group">
+                    <label for="expire_date">Expiration Date</label>
+                    <input type="date" id="expire_date" name="expire_date" required>
+                </div>
+            </div>
+
+            <div class="m_form_group full_width">
+                <label>Product Image</label>
+                <div class="image_upload_box">
+                    <img src="img/upload_icon.png" alt="Upload" id="upload_preview_icon">
+                    <p>Click to upload or drag and drop</p>
+                    <span class="upload_hint">PNG, JPG or JPEG (Max 2MB)</span>
+                    <input type="file" id="product_image" name="product_image" accept="image/png, image/jpeg" required>
+                </div>
+            </div>
+
+            <div class="m_form_actions">
+                <a href="/market/dashboard" class="btn_cancel">Cancel</a>
+                <button type="submit" class="btn_submit">Add Product</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
