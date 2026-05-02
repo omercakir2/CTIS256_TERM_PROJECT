@@ -9,8 +9,9 @@
 
     <div class="card shadow border-0 rounded-5 p-4" style="width: 100%; max-width: 550px;">
         <div class="card-body">
+           
             <h2 class="text-center mb-4">Register</h2>
-            <form method="POST" action="/register">
+            <form method="POST" action="/register" novalidate>
                 <div class="row g-2 mb-4">
                     <div class="col-6">
                         <input type="radio" class="btn-check" name="role" id="consumer" value="consumer" checked onchange="toggleRole()">
@@ -55,6 +56,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">Create Account</button>
+                <% if (error) { %>
+                <div class="alert alert-danger text-center py-2 mb-3 rounded-pill" role="alert" style="font-size: 0.9rem;">
+                    <%= error %>
+                </div>
+                <% } %>
                 <div class="text-center">
                     <a href="/login" class="text-success text-decoration-none small">Log In</a>
                 </div>

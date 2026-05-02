@@ -2,8 +2,15 @@ import 'dotenv/config';
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import db from './db.js';
+import session from 'express-session';
 
 const app = express();
+
+app.use(session({
+    secret: 'secretkey',
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use(express.static("public"))
 app.set("view engine","ejs")
@@ -33,8 +40,14 @@ const password = req.body.password.trim();
         const match = await bcrypt.compare(password, user.password);
         console.log("Bcrypt: ", match);
         if (match) {
-            if(user.role === 'consumer') {
 
+            req.session.user = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            };
+            if(user.role === 'consumer') {
                 res.redirect("/main");
             }
             else {
