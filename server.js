@@ -1,34 +1,35 @@
-import 'dotenv/config';
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import db from './db.js';
-import session from 'express-session';
-import { body, validationResult } from 'express-validator';
-
+import "dotenv/config";
+import express from "express";
+import bcrypt from "bcryptjs";
+import db from "./db.js";
+import session from "express-session";
+import { body, validationResult } from "express-validator";
 
 const app = express();
 
-app.use(session({
-    secret: 'secretkey',
+app.use(
+  session({
+    secret: "secretkey",
     resave: false,
-    saveUninitialized: false
-}));
+    saveUninitialized: false,
+  })
+);
 
 const registerValidation = [
-    body('email').isEmail().withMessage('Invalid email format!'),
-    body('password').notEmpty().withMessage('Password cannot be empty.'),
-    body('name').notEmpty().withMessage('Name cannot be empty'),
-    body('city').notEmpty().withMessage('City cannot be empty'),
-    body('district').notEmpty().withMessage('District cannot be empty')
+  body("email").isEmail().withMessage("Invalid email format!"),
+  body("password").notEmpty().withMessage("Password cannot be empty."),
+  body("name").notEmpty().withMessage("Name cannot be empty"),
+  body("city").notEmpty().withMessage("City cannot be empty"),
+  body("district").notEmpty().withMessage("District cannot be empty"),
 ];
 
 const loginValidation = [
-    body('email').isEmail().withMessage('Invalid email format!'),
-    body('password').notEmpty().withMessage('Password cannot be empty.')
+  body("email").isEmail().withMessage("Invalid email format!"),
+  body("password").notEmpty().withMessage("Password cannot be empty."),
 ];
 
-app.use(express.static("public"))
-app.set("view engine", "ejs")
+app.use(express.static("public"));
+app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.APP_PORT || 3000;
@@ -38,13 +39,13 @@ const checkAuth = (req, res, next) => {
   if (req.session.user) {
     next();
   } else {
-        res.redirect('/login'); 
+    res.redirect("/login");
   }
 };
 const restrictToRole = (role) => {
   return (req, res, next) => {
     if (!req.session.user) {
-            return res.redirect('/login');
+      return res.redirect("/login");
     }
     if (role && req.session.user.role !== role) {
       return res.status(403).send("Bu sayfaya erişim yetkiniz yok.");
@@ -53,29 +54,31 @@ const restrictToRole = (role) => {
   };
 };
 
-app.use('/market',checkAuth)
-app.use('main',checkAuth)
-app.use('/market', restrictToRole('market')); 
-app.use('/main', restrictToRole('consumer'));      
-app.use('/cart', restrictToRole('consumer'));      
+app.use("/market", checkAuth);
+app.use("main", checkAuth);
+app.use("/market", restrictToRole("market"));
+app.use("/main", restrictToRole("consumer"));
+app.use("/cart", restrictToRole("consumer"));
 
-
-app.get('/', (req, res) => {
-    res.render("index")
-})
-app.get('/login', (req, res) => {
+app.get("/", (req, res) => {
+  res.render("index");
+});
+app.get("/login", (req, res) => {
   if (req.session.user) {
-        return res.redirect(req.session.user.role === 'consumer' ? '/main' : '/market/dashboard');
+    return res.redirect(
+      req.session.user.role === "consumer" ? "/main" : "/market/dashboard"
+    );
   }
-    res.render('login', { error: null, formData: {} });
-})
-app.post('/login', loginValidation, async (req, res) => {
-
+  res.render("login", { error: null, formData: {} });
+});
+app.post("/login", loginValidation, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-        return res.render('login', { error: errors.array()[0].msg, formData: req.body });
+    return res.render("login", {
+      error: errors.array()[0].msg,
+      formData: req.body,
+    });
   }
-
 
   const email = req.body.email.trim();
   const password = req.body.password.trim();
@@ -86,7 +89,6 @@ app.post('/login', loginValidation, async (req, res) => {
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-
       req.session.user = {
         id: user.id,
         name: user.name,
@@ -265,7 +267,7 @@ app.get("/cart/add/product/:id", async (req, res) => {
       );
     }
 
-    res.redirect('/main');
+    res.redirect("/main");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error Occurred!");
@@ -277,7 +279,7 @@ app.get("/cart/remove/item/:id", async (req, res) => {
     const cart_id = req.params.id;
 
     const [rows] = await db.query("DELETE FROM carts WHERE id = ? ", [cart_id]);
-    res.redirect('/cart');
+    res.redirect("/cart");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error Occurred!");
