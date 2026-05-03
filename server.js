@@ -33,14 +33,42 @@ app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.APP_PORT || 3000;
 
+// Auth Kontrol Middleware
+const checkAuth = (req, res, next) => {
+    if (req.session.user) {
+        next(); 
+    } else {
+        res.redirect('/login'); 
+    }
+};
+const restrictToRole = (role) => {
+    return (req, res, next) => {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        if (role && req.session.user.role !== role) {
+            return res.status(403).send("Bu sayfaya erişim yetkiniz yok.");
+        }
+        next();
+    };
+};
+
+app.use('/market',checkAuth)
+app.use('main',checkAuth)
+app.use('/market', restrictToRole('market')); 
+app.use('/main', restrictToRole('consumer'));      
+app.use('/cart', restrictToRole('consumer'));      
+
+
 app.get('/', (req, res) => {
     res.render("index")
 })
 app.get('/login', (req, res) => {
+    if (req.session.user) {
+        return res.redirect(req.session.user.role === 'consumer' ? '/main' : '/market/dashboard');
+    }
     res.render('login', { error: null, formData: {} });
 })
-
-
 app.post('/login', loginValidation, async (req, res) => {
 
     const errors = validationResult(req);
@@ -92,11 +120,18 @@ app.post('/login', loginValidation, async (req, res) => {
 
 
 })
-
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.redirect('/main');
+        }
+        res.clearCookie('connect.sid'); 
+        res.redirect('/login');
+    });
+});
 app.get('/register', (req, res) => {
     res.render('register', { error: null, formData: {} });
 });
-
 app.post('/register', registerValidation, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
