@@ -326,6 +326,23 @@ app.delete("/cart/remove/item/:id", async (req, res) => {
     res.status(500).send("Error Occurred!");
   }
 });
+app.delete("/cart/clear", async (req, res) => {
+  //clears the currently logged in user's cart
+  try {
+    const consumer_id = req.session.user.id || 0;
+    const [rows] = await db.query("delete from carts where consumer_id=?", [
+      consumer_id,
+    ]);
+    if (rows.affectedRows > 0) {
+      //delete success
+      res.status(200).json({ success: true, message: "cart cleared!" });
+    } else {
+        res.status(404).json({ success: false, message: "cart is already EMPTY!" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${process.env.APP_PORT}`);
 });

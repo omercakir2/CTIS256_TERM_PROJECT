@@ -41,12 +41,7 @@ async function changeQuantity(cartId, action, normal_price, discounted_price) {
     console.error("Güncelleme hatası:", err);
   }
 }
-async function updateRowTotal(
-  cartId,
-  normal_price,
-  discounted_price,
-  quantity
-) {
+function updateRowTotal(cartId, normal_price, discounted_price, quantity) {
   const row = document.getElementById(`cart-row-${cartId}`);
   const discounted_span = row.querySelector(".discounted");
   const normal_span = row.querySelector(".normal");
@@ -71,4 +66,34 @@ function updateGrandTotal() {
   total_displays.forEach((display) => {
     display.textContent = formattedTotal;
   });
+}
+async function purchase() {
+  try {
+    const response = await fetch(`/cart/clear`, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const container = document.getElementById("container");
+      container.innerHTML = "";
+      updateGrandTotal();
+      notifySuccessPurchase();
+      console.log(result.message);
+    } else {
+      console.log(result.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+function notifySuccessPurchase() {
+  const target_div = document.getElementById("notification_div");
+  target_div.innerHTML = `<div class="alert alert-dismissible alert-success">
+                        <span id="notification_span">Your order has been successfully received!</span>
+                      </div>`;
+  setTimeout(() => {
+    target_div.innerHTML = "";
+  }, 5000);
 }
