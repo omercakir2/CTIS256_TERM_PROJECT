@@ -30,6 +30,7 @@ const loginValidation = [
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.APP_PORT || 3000;
@@ -273,13 +274,53 @@ app.get("/cart/add/product/:id", async (req, res) => {
     res.status(500).send("Error Occurred!");
   }
 });
-app.get("/cart/remove/item/:id", async (req, res) => {
+app.post("/cart/update-quantity", async (req, res) => {
+  try {
+    const { cartId, action } = req.body;
+    const consumerId = req.session.user.id;
+
+    const [rows] = await db.query(
+      "SELECT quantity FROM carts WHERE id = ? AND consumer_id = ?",
+      [cartId, consumerId]
+    );
+
+    if (rows.length === 0) return res.status(404).json({ success: false });
+
+    let newQuantity = rows[0].quantity;
+    if (action === "increment") {
+      newQuantity++;
+    } else if (action === "decrement" && newQuantity > 1) {
+      newQuantity--;
+    } else if (action === "decrement" && newQuantity === 1) {
+      return res.json({ success: true, newQuantity: 1 });
+    }
+
+    await db.query("UPDATE carts SET quantity = ? WHERE id = ?", [
+      newQuantity,
+      cartId,
+    ]);
+
+    res.json({ success: true, newQuantity: newQuantity });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({ success: false });
+  }
+});
+app.delete("/cart/remove/item/:id", async (req, res) => {
   try {
     const consumerId = req.session.user.id;
     const cart_id = req.params.id;
 
-    const [rows] = await db.query("DELETE FROM carts WHERE id = ? ", [cart_id]);
-    res.redirect("/cart");
+    const [result] = await db.query(
+      "DELETE FROM carts WHERE id = ? AND consumer_id = ?",
+      [cart_id, consumerId]
+    );
+    if (result.affectedRows > 0) {
+      res.json({ success: true, message: "Ürün sepetten silindi." });
+    } else {
+      res.status(404).json({ success: false, message: "Ürün bulunamadı." });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).send("Error Occurred!");
