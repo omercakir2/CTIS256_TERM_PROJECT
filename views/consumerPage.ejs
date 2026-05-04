@@ -101,7 +101,9 @@
                             <%= p.market %> - <%= p.district %>
                         </p>
                         
-                        <span class="badge bg-success mb-2">Same District</span>
+                       <% if (p.isSameDistrict) { %>
+            <span class="badge bg-success mb-2">Same District</span>
+                        <% } %>
 
                         <p class="mb-1">
                             <span class="text-decoration-line-through text-muted">
@@ -112,11 +114,14 @@
                             </span>
                         </p>
 
-                        <p class="mb-2 text-muted">Expires: <%= p.expiration_date %>
+                        <p class="mb-2 text-muted">Expires: <%= p.formattedExpirationDate %>
                         </p>
 
-                        <p class="text-success mb-3">21 days left</p>
-
+                        <% if (p.daysLeft === 0) { %>
+                         <p class="days-left mb-3">Expires today</p>
+                            <% } else { %>
+                         <p class="days-left mb-3"><%= p.daysLeft %> days left</p>
+                            <% } %>
                         <a href="/cart/add/product/<%= p.id %>">
                             <button class="btn btn-primary mt-auto">
                                 Add to Cart

@@ -224,12 +224,35 @@ const [countRows] = await db.query(
   [consumerCity, `%${keyword}%`]
 );
 
+const productsWithDetails = modifiedProducts.map((product) => {
+  const expirationDate = new Date(product.expiration_date);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  expirationDate.setHours(0, 0, 0, 0);
+
+  const diffTime = expirationDate - today;
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  const formattedExpirationDate = expirationDate.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
+  return {
+    ...product,
+    daysLeft,
+    formattedExpirationDate,
+    isSameDistrict: product.district === req.session.user.district,
+  };
+});
+
 const totalProducts = countRows[0].total;
 const totalPages = Math.ceil(totalProducts / limit);
 
     res.render("consumerPage", {
       user: req.session.user,
-      products: modifiedProducts,
+      products: productsWithDetails,
       keyword: keyword,
       currentPage: page,
       totalPages: totalPages
