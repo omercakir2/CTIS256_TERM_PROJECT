@@ -28,6 +28,23 @@ const loginValidation = [
   body("password").notEmpty().withMessage("Password cannot be empty."),
 ];
 
+const profileValidation = [
+  body("name")
+    .trim()
+    .notEmpty().withMessage("Name cannot be empty.")
+    .isLength({ max: 20 }).withMessage("Name cannot be longer than 20 characters."),
+
+  body("city")
+    .trim()
+    .notEmpty().withMessage("City cannot be empty.")
+    .isLength({ max: 20 }).withMessage("City cannot be longer than 20 characters."),
+
+  body("district")
+    .trim()
+    .notEmpty().withMessage("District cannot be empty.")
+    .isLength({ max: 20 }).withMessage("District cannot be longer than 20 characters."),
+];
+
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -60,6 +77,9 @@ app.use("main", checkAuth);
 app.use("/market", restrictToRole("market"));
 app.use("/main", restrictToRole("consumer"));
 app.use("/cart", restrictToRole("consumer"));
+
+app.use("/consumer", checkAuth);
+app.use("/consumer", restrictToRole("consumer"));
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -175,6 +195,99 @@ app.post("/register", registerValidation, async (req, res) => {
       .send("An error occurred during registration. Please try again later.");
   }
 });
+
+app.get("/consumer/profile", (req, res) => {
+  res.render("profile", {
+    user: req.session.user,
+    formData: req.session.user,
+    error: null,
+    success: null,
+  });
+});
+
+app.post("/consumer/profile", profileValidation, async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.render("profile", {
+      user: req.session.user,
+      formData: req.body,
+      error: errors.array()[0].msg,
+      success: null,
+    });
+  }
+
+  try {
+    const { name, city, district } = req.body;
+    const userId = req.session.user.id;
+
+    await db.query(
+      "UPDATE users SET name = ?, city = ?, district = ? WHERE id = ? AND role = 'consumer'",
+      [name.trim(), city.trim(), district.trim(), userId]
+    );
+
+    req.session.user.name = name.trim();
+    req.session.user.city = city.trim();
+    req.session.user.district = district.trim();
+
+    res.render("profile", {
+      user: req.session.user,
+      formData: req.session.user,
+      error: null,
+      success: "Profile updated successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Profile update failed.");
+  }
+});
+
+app.get("/market/profile", (req, res) => {
+  res.render("profile", {
+    user: req.session.user,
+    formData: req.session.user,
+    error: null,
+    success: null,
+  });
+});
+
+app.post("/market/profile", profileValidation, async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.render("profile", {
+      user: req.session.user,
+      formData: req.body,
+      error: errors.array()[0].msg,
+      success: null,
+    });
+  }
+
+  try {
+    const { name, city, district } = req.body;
+    const userId = req.session.user.id;
+
+    await db.query(
+      "UPDATE users SET name = ?, city = ?, district = ? WHERE id = ? AND role = 'market'",
+      [name.trim(), city.trim(), district.trim(), userId]
+    );
+
+    req.session.user.name = name.trim();
+    req.session.user.city = city.trim();
+    req.session.user.district = district.trim();
+
+    res.render("profile", {
+      user: req.session.user,
+      formData: req.session.user,
+      error: null,
+      success: "Profile updated successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Profile update failed.");
+  }
+});
+
 app.get("/main", async (req, res) => {
   try {
     // 1. Ürünleri çekiyoruz ve tüketicinin şehir ve ilçesine göre sıralıyoruz (önce aynı ilçedeki ürünler, sonra diğerleri)
