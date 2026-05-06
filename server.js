@@ -29,9 +29,20 @@ const loginValidation = [
 ];
 
 const profileValidation = [
-  body("name").notEmpty().withMessage("Name cannot be empty."),
-  body("city").notEmpty().withMessage("City cannot be empty."),
-  body("district").notEmpty().withMessage("District cannot be empty."),
+  body("name")
+    .trim()
+    .notEmpty().withMessage("Name cannot be empty.")
+    .isLength({ max: 100 }).withMessage("Name cannot be longer than 100 characters."),
+
+  body("city")
+    .trim()
+    .notEmpty().withMessage("City cannot be empty.")
+    .isLength({ max: 50 }).withMessage("City cannot be longer than 50 characters."),
+
+  body("district")
+    .trim()
+    .notEmpty().withMessage("District cannot be empty.")
+    .isLength({ max: 50 }).withMessage("District cannot be longer than 50 characters."),
 ];
 
 app.use(express.static("public"));
