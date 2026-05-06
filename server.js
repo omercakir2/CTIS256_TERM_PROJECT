@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import db from "./db.js";
 import session from "express-session";
 import { body, validationResult } from "express-validator";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 
@@ -73,10 +76,21 @@ const restrictToRole = (role) => {
 };
 
 app.use("/market", checkAuth);
-app.use("main", checkAuth);
+app.use("/main", checkAuth);
 app.use("/market", restrictToRole("market"));
 app.use("/main", restrictToRole("consumer"));
 app.use("/cart", restrictToRole("consumer"));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "public/uploads"), 
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `product-${Date.now()}${ext}`); // example: product-1678901234.jpg
+  }
+});
+
+const upload = multer({ storage });
+
 
 app.use("/consumer", checkAuth);
 app.use("/consumer", restrictToRole("consumer"));
@@ -375,15 +389,7 @@ const totalPages = Math.ceil(totalProducts / limit);
     res.status(500).send("Bir hata oluştu.");
   }
 });
-app.get("/market/dashboard", (req, res) => {
-  res.render("dashboard");
-});
-app.get("/market/addproduct", (req, res) => {
-  res.render("addproduct");
-});
-app.get("/market/product/edit", (req, res) => {
-  res.render("editproduct");
-});
+
 app.get("/cart", async (req, res) => {
   try {
     const consumerId = req.session.user.id;
@@ -516,6 +522,175 @@ app.delete("/cart/clear", async (req, res) => {
     console.log(error);
   }
 });
+
+app.get("/market/dashboard", async (req, res) => {
+  const market_id = req.session.user.id;
+  const [ rowsM ] = await db.query(`SELECT * FROM users where id = ?`, [market_id]);
+  const [rows] = await db.query("SELECT * FROM products");
+
+  if (rowsM.length === 0) return res.status(404).send("cannot find market user");
+
+  if (rows.length === 0) return res.status(404).send("product does not exist.");
+
+  let totalstock=0;
+  let totalproduct=0;
+  let activeproduct=0;
+  let expiredproduct=0;
+  const today = new Date();
+  rows.forEach(e => {
+    if(e.expiration_date < today ){
+      //expired
+      expiredproduct++
+      e.isActive= false;
+    }else{
+      activeproduct++
+      e.isActive= true;
+    }
+    totalstock+=e.stock;
+    totalproduct++;
+  })
+
+  res.render("dashboard", { product : rows , market : rowsM[0],totalstock,totalproduct,activeproduct,expiredproduct });
+});
+
+app.get("/market/addproduct", async (req, res) => {
+  const market_id = req.session.user.id;
+  const [rowsM] = await db.query(`SELECT * FROM users where id = ?`, [market_id]);
+
+  if (rowsM.length === 0) return res.status(404).send("cannot find market user");
+
+  const infoMsg = req.session.infoMessage ?? "";
+  const infoMsgStatus = req.session.infStatus ?? 0;
+  delete req.session.infoMessage;
+  delete req.session.infStatus;
+
+  res.render("addproduct", { market : rowsM[0], infoMsg, infoMsgStatus});
+});
+app.get("/market/product/edit/:proid", async (req, res) => {
+  const productId = parseInt(req.params.proid);
+  const [rows] = await db.query("SELECT * FROM products WHERE id = ?", [productId]);
+  const market_id = req.session.user.id;
+  const [rowsM] = await db.query(`SELECT * FROM users where id = ?`, [market_id]);
+
+  if (rowsM.length === 0) return res.status(404).send("cannot find market user");
+
+    if (rows.length === 0) {
+      return res.status(404).send("product does not exist.");
+    }
+
+  const infoMsg = req.session.infoMessage ?? "";
+  const infoMsgStatus = req.session.infStatus ?? 0;
+  delete req.session.infoMessage;
+  delete req.session.infStatus;
+
+  res.render("editproduct", { product : rows[0], market : rowsM[0], infoMsg, infoMsgStatus});
+});
+
+app.post("/market/addproduct", upload.single("product_image"), async (req,res) => {
+  //const original_p= Number(original_price) no need
+
+  try {
+    const {product_title, product_stock, original_price, 
+            discounted_price, expire_date} = req.body;
+    const marketId = req.session.user.id;
+    const imageFilename = req.file.filename;
+
+    await db.query(`INSERT INTO products(market_id,title,stock,normal_price,
+                    discounted_price,expiration_date,image_url) VALUES(?,?,?,?,?,?,?)`,
+                  [marketId, product_title, product_stock, original_price,
+                    discounted_price, expire_date, imageFilename])
+
+    req.session.infStatus= true; 
+    req.session.infoMessage = "Product added successfully!"; 
+             
+    req.session.save((err) => {
+      res.redirect("/market/addproduct");
+    });
+
+    } catch (err) {
+      console.log(err)
+      req.session.infStatus= false; 
+      req.session.infoMessage = "Product CANNOT added! Check product informations.";
+
+      req.session.save((err) => {
+      res.redirect("/market/addproduct");
+    });
+
+    }
+});
+
+app.post("/market/editproduct/:proid", upload.single("product_image"), async (req,res) => {
+  try {
+    const productId = parseInt(req.params.proid);
+    const {product_title, product_stock, original_price, 
+            discounted_price, expire_date, product_image_already} = req.body;
+    let imageFilename= product_image_already;
+    const marketId = req.session.user.id;
+
+    if (req.file) {
+    imageFilename = req.file.filename;
+
+  
+    if (product_image_already) {
+       const oldPath = path.join(process.cwd(), "public", "uploads", product_image_already);
+       if (fs.existsSync(oldPath)) {
+           fs.unlinkSync(oldPath);
+       }
+    }
+  }
+
+    await db.query(`UPDATE products SET title = ?, stock = ?, normal_price = ?,
+                    discounted_price = ?, expiration_date = ?, image_url = ? 
+                    WHERE id = ?`,
+                  [product_title, product_stock, original_price, 
+                   discounted_price, expire_date, imageFilename,
+                   productId
+                  ]);
+      
+    req.session.infStatus = true; 
+    req.session.infoMessage = "Product updated successfully!"; 
+             
+    req.session.save((err) => {
+      res.redirect("/market/product/edit/"+ productId);
+    });
+    } catch (err) {
+      console.log(err);
+      req.session.infStatus = false; 
+      req.session.infoMessage = "Product CANNOT be updated! Check product informations.";
+
+      req.session.save((err) => {
+        res.redirect("/market/product/edit/"+ productId);
+      });
+    }
+});
+
+app.get("/market/product/delete/:proid", async (req,res) => {
+  try {
+    const productId = parseInt(req.params.proid);
+    const [rows] = await db.query("SELECT image_url FROM products WHERE id = ?", [productId]);
+
+    if (rows.length === 0) {
+      return res.status(404).send("product does not exist.");
+    }
+
+    const imageFilename = rows[0].image_url;
+
+    if (imageFilename) {
+      const filePath = path.join(process.cwd(), "public", "uploads", imageFilename);
+      
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath); // Dosyayı silen komut
+        console.log("image was deleted properly.", imageFilename);
+      }
+    }
+
+    await db.query("DELETE FROM products WHERE id = ?", [productId]);
+    res.redirect("/market/dashboard");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${process.env.APP_PORT}`);
 });

@@ -16,9 +16,9 @@
         <div class="m_nav_func">
             <a class="m_dash active" href="#">Dashboard</a>
             <a class="m_prod" href="/market/addproduct">Add Products</a>
-            <a id="m_prof" href="/profile?user=market">
+            <a id="m_prof" href="/profile/<%= market.id %>">
                 <div class="m_img_cont"><img src="/img/userupdt.png" alt="user" class="m_img"></div>
-                <div class="prof_name">Profile</div>
+                <div class="prof_name"><%= market.name %></div>
             </a>
             <a class="m_logout" href="/logout">Logout</a>
         </div>
@@ -31,24 +31,24 @@
                 <h2>Market Dashboard</h2>
             </div>
             <div class="m_info_welc">
-                <span>Welcome Back, <span id="m_info_name">ABCDEF MARKET</span>! Manage your inventory below.</span>
+                <span>Welcome Back, <span id="m_info_name"><%= market.name %></span>! Manage your inventory below.</span>
             </div>
             
             <div class="m_pro_num_info">
                 <div class="m_stat_card">
-                    <div class="m_stat_number text-green">6</div>
+                    <div class="m_stat_number text-green"><%= totalproduct %></div>
                     <div class="m_stat_label">TOTAL PRODUCTS</div>
                 </div>
                 <div class="m_stat_card">
-                    <div class="m_stat_number text-green">6</div>
+                    <div class="m_stat_number text-green"><%= activeproduct %></div>
                     <div class="m_stat_label">ACTIVE</div>
                 </div>
                 <div class="m_stat_card">
-                    <div class="m_stat_number text-red" id="m_stat_expired">0</div>
+                    <div class="m_stat_number text-red" id="m_stat_expired"><%= expiredproduct %></div>
                     <div class="m_stat_label">EXPIRED</div>
                 </div>
                 <div class="m_stat_card">
-                    <div class="m_stat_number text-blue">90</div>
+                    <div class="m_stat_number text-blue"><%= totalstock %></div>
                     <div class="m_stat_label">TOTAL STOCK</div>
                 </div>
             </div>
@@ -71,111 +71,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
+                    <% for( let p of product) { %>
+                    <% if( p.isActive ) { %>  
+                        <tr>
+                    <% } else { %>
+                        <tr class="expired_row">
+                    <% } %>
+                        <td><div class="m_img_cont m_prod_img"><img src="/uploads/<%= p.image_url %>" alt="product image" class="m_img" ></div></td>
+                        <td class="font-medium"><%= p.title %></td>
+                        <td><%= p.stock %></td>
+                        <td class="text-gray">₺<%= p.normal_price %></td>
+                        <td class="text-success font-medium">₺<%= p.discounted_price %></td>
+                        <td><%= new Date(p.expiration_date).toLocaleDateString('en-GB') %></td>
+                        <% if( p.isActive ) { %>
+                            <td><span class="m_pro_active">Active</span></td>
+                        <% } else { %>
+                            <td><span class="m_pro_expired">Expired</span></td>
+                        <% } %>
                         <td>
                             <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
+                                <a href="/market/product/edit/<%= p.id %>" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
+                                <a href="/market/product/delete/<%= p.id %>" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
                             </div>
                         </td>
                     </tr>
-                    <tr class="expired_row">
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td class="text-red font-medium">30/04/2026</td>
-                        <td><span class="m_pro_expired">Expired</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="m_img_cont m_prod_img"><img src="/img/question.jpg" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium">Toblerone</td>
-                        <td>25</td>
-                        <td class="text-gray">₺25.00</td>
-                        <td class="text-success font-medium">₺14.00</td>
-                        <td>30/05/2026</td>
-                        <td><span class="m_pro_active">Active</span></td>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit?product=pro" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete?product=pro" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
+                    <% } %>
                     </tbody>
             </table>
         </div>

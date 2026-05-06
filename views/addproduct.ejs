@@ -15,10 +15,10 @@
         </div>
         <div class="m_nav_func">
             <a class="m_dash" href="/market/dashboard">Dashboard</a>
-            <a class="m_prod active" href="/market/addproduct">Add Products</a>
-            <a id="m_prof" href="/profile?user=market">
+            <a class="m_prod active" href="#">Add Products</a>
+            <a id="m_prof" href="/profile/<%= market.id %>">
                 <div class="m_img_cont"><img src="/img/userupdt.png" alt="user" class="m_img"></div>
-                <div class="prof_name">Profile</div>
+                <div class="prof_name"><%= market.name %></div>
             </a>
             <a class="m_logout" href="/logout">Logout</a>
         </div>
@@ -30,7 +30,7 @@
             <p>Fill in the details below to add a new sustainable product to your inventory.</p>
         </div>
 
-        <form action="/addproduct" method="POST" enctype="multipart/form-data" class="m_add_form" name="m_add_page">
+        <form action="/market/addproduct" method="POST" enctype="multipart/form-data" class="m_add_form" name="m_add_page">
             
             <div class="m_form_row">
                 <div class="m_form_group">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="m_form_group">
                     <label for="expire_date">Expiration Date</label>
-                    <input type="date" id="expire_date" name="expire_date" required>
+                    <input type="date" id="expire_date" name="expire_date" value="<%= new Date().toISOString().split('T')[0] %>" required>
                 </div>
             </div>
 
@@ -73,6 +73,19 @@
                 <button type="submit" class="btn_submit">Add Product</button>
             </div>
         </form>
+        <% if (locals.infoMsg && locals.infoMsg !== "") { %>
+            
+            <% if (locals.infoMsgStatus) { %>
+                <div class="alert alert-success" id="messageBox">
+                    <%= locals.infoMsg %>
+                </div>
+            <% } else { %>
+                <div class="alert alert-danger" id="messageBox">
+                    <%= locals.infoMsg %>
+                </div>
+            <% } %>
+
+        <% } %>
     </main>
 </body>
 </html>
