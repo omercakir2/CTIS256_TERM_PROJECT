@@ -54,7 +54,7 @@
                 </div>
                 <div class="m_form_group">
                     <label for="expire_date">Expiration Date</label>
-                    <input type="date" id="expire_date" name="expire_date" value="<%= product.expiration_date %>" required>
+                    <input type="date" id="expire_date" name="expire_date" value="<%= new Date(product.expiration_date).toLocaleDateString('en-CA') %>" required>
                 </div>
             </div>
 
@@ -78,6 +78,17 @@
                 <button type="submit" class="btn_submit">Save Changes</button>
             </div>
         </form>
+        <% if (locals.infoMsg && locals.infoMsg !== "") { %>
+            <% if (locals.infoMsgStatus) { %>
+                <div class="alert alert-success" id="messageBox">
+                    <%= locals.infoMsg %>
+                </div>
+            <% } else { %>
+                <div class="alert alert-danger" id="messageBox">
+                    <%= locals.infoMsg %>
+                </div>
+            <% } %>
+        <% } %>
     </main>
 </body>
 </html>

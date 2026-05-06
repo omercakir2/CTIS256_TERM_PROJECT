@@ -447,7 +447,12 @@ app.get("/market/addproduct", async (req, res) => {
 
   if (rowsM.length === 0) return res.status(404).send("cannot find market user");
 
-  res.render("addproduct", { market : rowsM[0]});
+  const infoMsg = req.session.infoMessage ?? "";
+  const infoMsgStatus = req.session.infStatus ?? 0;
+  delete req.session.infoMessage;
+  delete req.session.infStatus;
+
+  res.render("addproduct", { market : rowsM[0], infoMsg, infoMsgStatus});
 });
 app.get("/market/product/edit/:proid", async (req, res) => {
   const productId = parseInt(req.params.proid);
@@ -461,7 +466,12 @@ app.get("/market/product/edit/:proid", async (req, res) => {
       return res.status(404).send("product does not exist.");
     }
 
-  res.render("editproduct", { product : rows[0], market : rowsM[0]});
+  const infoMsg = req.session.infoMessage ?? "";
+  const infoMsgStatus = req.session.infStatus ?? 0;
+  delete req.session.infoMessage;
+  delete req.session.infStatus;
+
+  res.render("editproduct", { product : rows[0], market : rowsM[0], infoMsg, infoMsgStatus});
 });
 
 app.post("/market/addproduct", upload.single("product_image"), async (req,res) => {
@@ -477,11 +487,23 @@ app.post("/market/addproduct", upload.single("product_image"), async (req,res) =
                     discounted_price,expiration_date,image_url) VALUES(?,?,?,?,?,?,?)`,
                   [marketId, product_title, product_stock, original_price,
                     discounted_price, expire_date, imageFilename])
-      
-    res.redirect("/market/addproduct");
+
+    req.session.infStatus= true; 
+    req.session.infoMessage = "Product added successfully!"; 
+             
+    req.session.save((err) => {
+      res.redirect("/market/addproduct");
+    });
+
     } catch (err) {
-      res.status(500).send(err.message)
-      
+      console.log(err)
+      req.session.infStatus= false; 
+      req.session.infoMessage = "Product CANNOT added! Check product informations.";
+
+      req.session.save((err) => {
+      res.redirect("/market/addproduct");
+    });
+
     }
 });
 
@@ -513,10 +535,20 @@ app.post("/market/editproduct/:proid", upload.single("product_image"), async (re
                    productId
                   ]);
       
-    res.redirect("/market/product/edit/"+ productId);
+    req.session.infStatus = true; 
+    req.session.infoMessage = "Product updated successfully!"; 
+             
+    req.session.save((err) => {
+      res.redirect("/market/product/edit/"+ productId);
+    });
     } catch (err) {
-      res.status(500).send(err.message)
-      
+      console.log(err);
+      req.session.infStatus = false; 
+      req.session.infoMessage = "Product CANNOT be updated! Check product informations.";
+
+      req.session.save((err) => {
+        res.redirect("/market/product/edit/"+ productId);
+      });
     }
 });
 

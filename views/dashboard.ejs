@@ -78,7 +78,7 @@
                         <td><%= p.stock %></td>
                         <td class="text-gray">₺<%= p.normal_price %></td>
                         <td class="text-success font-medium">₺<%= p.discounted_price %></td>
-                        <td><%= p.expiration_date %></td>
+                        <td><%= new Date(p.expiration_date).toLocaleDateString('en-GB') %></td>
                         <% if( p.isActive ) { %>
                             <td><span class="m_pro_active">Active</span></td>
                         <% } else { %>

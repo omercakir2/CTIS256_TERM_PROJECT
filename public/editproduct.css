@@ -215,7 +215,30 @@ a { text-decoration: none; }
     background-color: var(--primary-dark);
 }
 
-/* Medya Sorguları */
+.alert {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px; 
+    text-align: center;
+    font-weight: 600; 
+    width: 100%;
+    box-sizing: border-box;
+    transition: opacity 0.5s ease;
+}
+
+.alert-success {
+    background-color: #F0Fdf4; 
+    color: var(--primary-dark);
+    border: 1px solid var(--primary-color);
+}
+
+.alert-danger {
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+}
+
+/* Medya */
 @media (max-width: 768px) {
     .m_navbar { flex-direction: column; height: auto; padding: 15px; }
     .m_nav_func { margin-top: 15px; flex-wrap: wrap; justify-content: center; }
