@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+
+    <link rel="stylesheet" href="/bootstrap.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="<%= user.role === 'consumer' ? '/main' : '/market/dashboard' %>">
+                Sustainable Marketplace
+            </a>
+
+            <div class="ms-auto">
+                <% if (user.role === 'consumer') { %>
+                    <a href="/main" class="btn btn-outline-light btn-sm me-2">Main Page</a>
+                    <a href="/cart" class="btn btn-outline-light btn-sm me-2">Cart</a>
+                <% } else { %>
+                    <a href="/market/dashboard" class="btn btn-outline-light btn-sm me-2">Dashboard</a>
+                <% } %>
+
+                <a href="/logout" class="btn btn-light btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-6">
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <h3 class="fw-bold mb-1">
+                            <%= user.role === 'consumer' ? 'Edit Consumer Profile' : 'Edit Market Profile' %>
+                        </h3>
+
+                        <p class="text-muted mb-4">
+                            Update your account information.
+                        </p>
+
+                        <% if (error) { %>
+                            <div class="alert alert-danger">
+                                <%= error %>
+                            </div>
+                        <% } %>
+
+                        <% if (success) { %>
+                            <div class="alert alert-success">
+                                <%= success %>
+                            </div>
+                        <% } %>
+
+                        <form action="<%= user.role === 'consumer' ? '/consumer/profile' : '/market/profile' %>" method="POST">
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <%= user.role === 'consumer' ? 'Full Name' : 'Market Name' %>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="name" 
+                                    class="form-control"
+                                    value="<%= formData.name || '' %>"
+                                    maxlength="20"
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input 
+                                    type="email" 
+                                    class="form-control"
+                                    value="<%= user.email %>"
+                                    disabled
+                                >
+                                <small class="text-muted">Email cannot be changed.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">City</label>
+                                <input 
+                                    type="text" 
+                                    name="city" 
+                                    class="form-control"
+                                    value="<%= formData.city || '' %>"
+                                     maxlength="20"
+                                >
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">District</label>
+                                <input 
+                                    type="text" 
+                                    name="district" 
+                                    class="form-control"
+                                    value="<%= formData.district || '' %>"
+                                     maxlength="20"
+                                >
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">
+                                Save Changes
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
