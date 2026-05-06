@@ -32,17 +32,17 @@ const profileValidation = [
   body("name")
     .trim()
     .notEmpty().withMessage("Name cannot be empty.")
-    .isLength({ max: 100 }).withMessage("Name cannot be longer than 100 characters."),
+    .isLength({ max: 20 }).withMessage("Name cannot be longer than 20 characters."),
 
   body("city")
     .trim()
     .notEmpty().withMessage("City cannot be empty.")
-    .isLength({ max: 50 }).withMessage("City cannot be longer than 50 characters."),
+    .isLength({ max: 20 }).withMessage("City cannot be longer than 20 characters."),
 
   body("district")
     .trim()
     .notEmpty().withMessage("District cannot be empty.")
-    .isLength({ max: 50 }).withMessage("District cannot be longer than 50 characters."),
+    .isLength({ max: 20 }).withMessage("District cannot be longer than 20 characters."),
 ];
 
 app.use(express.static("public"));
