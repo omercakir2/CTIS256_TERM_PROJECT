@@ -72,7 +72,11 @@
                 </thead>
                 <tbody>
                     <% for( let p of product) { %>
-                    <tr>
+                    <% if( p.isActive ) { %>  
+                        <tr>
+                    <% } else { %>
+                        <tr class="expired_row">
+                    <% } %>
                         <td><div class="m_img_cont m_prod_img"><img src="/uploads/<%= p.image_url %>" alt="product image" class="m_img" ></div></td>
                         <td class="font-medium"><%= p.title %></td>
                         <td><%= p.stock %></td>
