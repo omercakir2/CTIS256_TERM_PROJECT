@@ -111,6 +111,15 @@
             box-shadow: 0 4px 10px rgba(67, 204, 41, 0.3);
             display: inline-block;
         }
+        .badge-out-of-stock {
+            background-color: red;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(67, 204, 41, 0.3);
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -150,6 +159,9 @@
                     <div class="mb-4">
                         <% if (product.isSameDistrict) { %>
                             <span class="badge-near-you"><i class="bi bi-geo-alt-fill me-1"></i>Near You</span>
+                        <% } %>
+                        <% if (product.stock <= 0) { %>
+                            <span class="badge-out-of-stock">No Stock!</span>
                         <% } %>
                     </div>
 
@@ -193,9 +205,15 @@
                     </div>
 
                     <div class="mt-4">
-                        <a href="/cart/add/product/<%= product.id %>" class="btn btn-add-cart">
-                            <i class="bi bi-cart-plus-fill me-2"></i> Add to Cart
-                        </a>
+                        <% if(product.stock <=0) {%>
+                            <span class="btn btn-add-cart">
+                                <i class="bi bi-cart-plus-fill me-2"></i> No Stock
+                            </span>
+                            <%}else{%>
+                                <a href="/cart/add/product/<%= product.id %>" class="btn btn-add-cart">
+                                    <i class="bi bi-cart-plus-fill me-2"></i> Add to Cart
+                                </a>
+                                <%}%>
                     </div>
 
                     <div class="text-center mt-4">

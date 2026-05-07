@@ -575,17 +575,22 @@ app.get("/cart/add/product/:id", async (req, res) => {
       "SELECT * FROM carts WHERE consumer_id = ? AND product_id = ?",
       [consumerId, productId]
     );
+    const [rowsProduct] = await db.query("select * from products where id = ? ",[productId]);
 
-    if (rows.length > 0) {
-      await db.query("UPDATE carts SET quantity = ? WHERE id = ?", [
-        rows[0].quantity + 1,
-        rows[0].id,
-      ]);
-    } else {
-      await db.query(
-        "INSERT INTO carts (consumer_id, product_id, quantity, added_at) VALUES (?, ?, ?, ?)",
-        [consumerId, productId, 1, new Date()]
-      );
+
+    if(rowsProduct.length > 0 && rowsProduct[0].stock > 0 ){//means product exits and there is enough stock 
+      if (rows.length > 0) {
+        await db.query("UPDATE carts SET quantity = ? WHERE id = ?", [
+          rows[0].quantity + 1,
+          rows[0].id,
+        ]);
+      } else {
+        await db.query(
+          "INSERT INTO carts (consumer_id, product_id, quantity, added_at) VALUES (?, ?, ?, ?)",
+          [consumerId, productId, 1, new Date()]
+        );
+      }
+      await db.query("update products set stock=? where id=?",[rowsProduct[0].stock-1,productId]);
     }
 
     res.redirect("/main");
@@ -600,17 +605,22 @@ app.post("/cart/update-quantity", async (req, res) => {
     const consumerId = req.session.user.id;
 
     const [rows] = await db.query(
-      "SELECT quantity FROM carts WHERE id = ? AND consumer_id = ?",
+      "SELECT * FROM carts WHERE id = ? AND consumer_id = ?",
       [cartId, consumerId]
     );
+    const [rowsProduct] = await db.query("select * from products where id = ? ",[rows[0].product_id]);
 
-    if (rows.length === 0) return res.status(404).json({ success: false });
+    if (rows.length === 0 && rowsProduct.length === 0) return res.status(404).json({ success: false });
 
     let newQuantity = rows[0].quantity;
     if (action === "increment") {
-      newQuantity++;
+      if(rowsProduct.length > 0 && rowsProduct[0].stock > 0 ){
+        newQuantity++;
+        await db.query("update products set stock=? where id=?",[rowsProduct[0].stock-1,rows[0].product_id]);
+      }
     } else if (action === "decrement" && newQuantity > 1) {
       newQuantity--;
+      await db.query("update products set stock=? where id=?",[rowsProduct[0].stock+1,rows[0].product_id]);
     } else if (action === "decrement" && newQuantity === 1) {
       return res.json({ success: true, newQuantity: 1 });
     }
@@ -632,11 +642,20 @@ app.delete("/cart/remove/item/:id", async (req, res) => {
     const consumerId = req.session.user.id;
     const cart_id = req.params.id;
 
+    const [rows] = await db.query(
+      "SELECT * FROM carts WHERE id = ? AND consumer_id = ?",
+      [cart_id, consumerId]
+    );
+    const quantity = rows[0].quantity;
+
+    const [rowsProduct] = await db.query("select * from products where id = ? ",[rows[0].product_id]);
+
     const [result] = await db.query(
       "DELETE FROM carts WHERE id = ? AND consumer_id = ?",
       [cart_id, consumerId]
     );
     if (result.affectedRows > 0) {
+      await db.query("update products set stock=? where id=?",[rowsProduct[0].stock + quantity ,rows[0].product_id]);
       res.json({ success: true, message: "Ürün sepetten silindi." });
     } else {
       res.status(404).json({ success: false, message: "Ürün bulunamadı." });
