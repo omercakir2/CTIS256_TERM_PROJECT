@@ -7,7 +7,7 @@
     <title>Sustainable Market</title>
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
     <style>
         :root {
             --morph-main: #378dfc;
@@ -25,7 +25,7 @@
         .product-img {
             height: 220px;
             object-fit: cover;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             transition: transform 0.5s ease;
         }
 
@@ -64,7 +64,7 @@
         .badge-district {
             background-color: #f0f2f5;
             color: #2c3e50;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             font-weight: 600;
             padding: 0.5rem 0.8rem;
             display: inline-flex;
@@ -79,6 +79,16 @@
             background-color: #43cc29;
             color: white;
             box-shadow: 0 4px 10px rgba(67, 204, 41, 0.4);
+            font-weight: bold;
+        }
+
+        .badge-out-of-stock {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            background-color: red;
+            color: white;
             font-weight: bold;
         }
 
@@ -127,7 +137,7 @@
     </nav>
 
     <div class="container py-5">
-        
+
         <div class="row mb-5 align-items-center">
             <div class="col-md-7">
                 <h1 class="display-5 fw-bold mb-2">Hello, <%= user.name %>! 👋</h1>
@@ -135,12 +145,17 @@
             </div>
             <div class="col-md-5 text-md-end">
                 <div class="d-inline-block bg-white p-3 rounded-4 shadow-sm text-start">
-                    <div class="small text-uppercase text-muted fw-bold mb-1" style="letter-spacing: 1px; font-size: 0.7rem;">Your Location</div>
+                    <div class="small text-uppercase text-muted fw-bold mb-1"
+                        style="letter-spacing: 1px; font-size: 0.7rem;">Your Location</div>
                     <div class="d-flex align-items-center">
                         <i class="bi bi-geo-alt-fill text-danger me-2 fs-4"></i>
                         <div>
-                            <span class="fw-bold d-block"><%= user.city %></span>
-                            <span class="text-secondary small"><%= user.district %></span>
+                            <span class="fw-bold d-block">
+                                <%= user.city %>
+                            </span>
+                            <span class="text-secondary small">
+                                <%= user.district %>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -151,7 +166,9 @@
             <div class="col-lg-10 search-container">
                 <form action="/main" method="GET">
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" placeholder="What are you looking for? (e.g. bread, fruit, pasta)" name="keyword" value="<%= keyword || '' %>">
+                        <input type="text" class="form-control"
+                            placeholder="What are you looking for? (e.g. bread, fruit, pasta)" name="keyword"
+                            value="<%= keyword || '' %>">
                         <button class="btn btn-primary rounded-pill px-5 shadow-sm" type="submit">
                             <i class="bi bi-search me-2"></i> Search
                         </button>
@@ -162,91 +179,124 @@
 
         <div class="d-flex align-items-center mb-4">
             <h3 class="fw-bold mb-0">Fresh Offers</h3>
-            <span class="ms-3 badge bg-light text-dark shadow-none border"><%= products.length %> items</span>
+            <span class="ms-3 badge bg-light text-dark shadow-none border">
+                <%= products.length %> items
+            </span>
             <hr class="flex-grow-1 ms-3 opacity-10">
         </div>
 
-        <% if (products.length === 0) { %>
+        <% if (products.length===0) { %>
             <div class="card p-5 text-center shadow-sm">
                 <div class="display-1 text-muted mb-3"><i class="bi bi-search-heart"></i></div>
                 <h4 class="text-muted">No products found for this search.</h4>
                 <p>Try using broader keywords or explore all items.</p>
                 <a href="/main" class="btn btn-primary rounded-pill px-4 mt-2">Clear All Filters</a>
             </div>
-        <% } else { %>
+            <% } else { %>
 
-            <div class="row g-4">
-                <% for( let p of products ) { %>
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="card h-100 overflow-hidden">
-                            
-                            <% if (p.isSameDistrict) { %>
-                                <span class="badge badge-near-you rounded-pill px-3 py-2">
-                                    <i class="bi bi-lightning-fill me-1"></i>NEAR YOU
-                                </span>
-                            <% } %>
+                <div class="row g-4">
+                    <% for( let p of products ) { %>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="card h-100 overflow-hidden">
 
-                            <a href="/product/<%= p.id %>" class="d-block overflow-hidden">
-                                <img src="/uploads/<%= p.image_url %>" class="card-img-top product-img" alt="<%= p.title %>">
-                            </a>
+                                <% if (p.stock <=0) { %>
+                                    <span class="badge badge-out-of-stock rounded-pill px-3 py-2">
+                                        NO STOCK!
+                                    </span>
+                                    <% }else{%>
+                                <% if (p.isSameDistrict) { %>
+                                    <span class="badge badge-near-you rounded-pill px-3 py-2">
+                                        <i class="bi bi-lightning-fill me-1"></i>NEAR YOU
+                                    </span>
+                                    <% } %>
+                                    <% } %>
+                                        
 
-                            <div class="card-body d-flex flex-column p-4">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <span class="text-primary fw-bold small text-uppercase"><%= p.market %></span>
-                                    <span class="text-muted small"><i class="bi bi-calendar-event me-1"></i><%= p.daysLeft === 0 ? 'Today' : p.daysLeft + 'd' %></span>
-                                </div>
 
-                                <h5 class="card-title mb-3">
-                                    <a href="/product/<%= p.id %>" class="text-decoration-none text-dark fw-bold">
-                                        <%= p.title %>
-                                    </a>
-                                </h5>
+                                                <a href="/product/<%= p.id %>" class="d-block overflow-hidden">
+                                                    <img src="/uploads/<%= p.image_url %>"
+                                                        class="card-img-top product-img" alt="<%= p.title %>">
+                                                </a>
 
-                                <div class="mb-3">
-                                    <div class="badge-district rounded-pill small">
-                                        <i class="bi bi-geo-alt-fill text-primary me-1"></i> <%= p.district %>
-                                    </div>
-                                </div>
+                                                <div class="card-body d-flex flex-column p-4">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <span class="text-primary fw-bold small text-uppercase">
+                                                            <%= p.market %>
+                                                        </span>
+                                                        <span class="text-muted small"><i
+                                                                class="bi bi-calendar-event me-1"></i>
+                                                            <%= p.daysLeft===0 ? 'Today' : p.daysLeft + 'd' %>
+                                                        </span>
+                                                        <span class="text-muted small">
+                                                            <%= p.stock + ' available' %>
+                                                        </span>
+                                                    </div>
 
-                                <div class="d-flex align-items-center gap-2 mb-4 mt-auto">
-                                    <div class="price-new"><%= p.discounted_price %> TL</div>
-                                    <div class="price-old"><%= p.normal_price %> TL</div>
-                                </div>
+                                                    <h5 class="card-title mb-3">
+                                                        <a href="/product/<%= p.id %>"
+                                                            class="text-decoration-none text-dark fw-bold">
+                                                            <%= p.title %>
+                                                        </a>
+                                                    </h5>
 
-                                <a href="/cart/add/product/<%= p.id %>" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm">
-                                    <i class="bi bi-plus-lg me-1"></i> Add to Cart
-                                </a>
+                                                    <div class="mb-3">
+                                                        <div class="badge-district rounded-pill small">
+                                                            <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+                                                            <%= p.district %>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex align-items-center gap-2 mb-4 mt-auto">
+                                                        <div class="price-new">
+                                                            <%= p.discounted_price %> TL
+                                                        </div>
+                                                        <div class="price-old">
+                                                            <%= p.normal_price %> TL
+                                                        </div>
+                                                    </div>
+
+                                                    <a href="/cart/add/product/<%= p.id %>"
+                                                        class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm <%= p.stock <= 0 ? 'disabled' : '' %>"
+                                                        <% if (p.stock <=0) { %> aria-disabled="true"
+                                                        style="pointer-events: none;" <% } %>>
+                                                            <i class="bi bi-plus-lg me-1"></i> Add to Cart
+                                                    </a>
+                                                </div>
                             </div>
                         </div>
-                    </div>
-                <% } %>
-            </div>
-
-            <% if (totalPages > 1) { %>
-                <nav class="mt-5 pt-4">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %> mx-1">
-                            <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= currentPage - 1 %>">
-                                <i class="bi bi-chevron-left"></i>
-                            </a>
-                        </li>
-
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li class="page-item <%= currentPage === i ? 'active' : '' %> mx-1">
-                                <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= i %>"><%= i %></a>
-                            </li>
                         <% } %>
+                </div>
 
-                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %> mx-1">
-                            <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= currentPage + 1 %>">
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            <% } %>
+                <% if (totalPages> 1) { %>
+                    <nav class="mt-5 pt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %> mx-1">
+                                <a class="page-link rounded-circle shadow-sm"
+                                    href="/main?keyword=<%= keyword %>&page=<%= currentPage - 1 %>">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
 
-        <% } %>
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <li class="page-item <%= currentPage === i ? 'active' : '' %> mx-1">
+                                    <a class="page-link rounded-circle shadow-sm"
+                                        href="/main?keyword=<%= keyword %>&page=<%= i %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                                <% } %>
+
+                                    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %> mx-1">
+                                        <a class="page-link rounded-circle shadow-sm"
+                                            href="/main?keyword=<%= keyword %>&page=<%= currentPage + 1 %>">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                        </ul>
+                    </nav>
+                    <% } %>
+
+                        <% } %>
     </div>
 
     <footer class="mt-5 py-5 border-top">
