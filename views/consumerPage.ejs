@@ -4,186 +4,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Sustainable Market</title>
     <link rel="stylesheet" href="bootstrap.css">
-
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
+        :root {
+            --morph-main: #378dfc;
+            --morph-bg: #e6e9ef;
+            --morph-shadow-dark: #d1d9e6;
+            --morph-shadow-light: #ffffff;
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--morph-bg);
+            color: #444b40;
         }
 
-        .card-img-top {
-            height: 180px;
+        /* Ürün Resimleri */
+        .product-img {
+            height: 220px;
             object-fit: cover;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.5s ease;
         }
 
+        /* Kart İyileştirmeleri */
         .card {
-            border-radius: 12px;
+            border: none;
+            transition: all 0.3s ease;
+            background-color: var(--morph-bg);
+            /* Morph teması kart gölgeleri */
+            box-shadow: 9px 9px 16px var(--morph-shadow-dark), -9px -9px 16px var(--morph-shadow-light);
         }
 
         .card:hover {
-            transform: translateY(-3px);
-            transition: 0.2s;
+            transform: translateY(-8px);
+            box-shadow: 12px 12px 20px var(--morph-shadow-dark), -12px -12px 20px var(--morph-shadow-light) !important;
         }
 
-        .navbar-brand {
-            color: #198754;
+        .card:hover .product-img {
+            transform: scale(1.05);
         }
-        
+
+        /* Fiyat Etiketleri */
+        .price-old {
+            font-size: 0.85rem;
+            text-decoration: line-through;
+            color: #7f8a99;
+        }
+
+        .price-new {
+            font-size: 1.25rem;
+            color: var(--morph-main);
+            font-weight: 800;
+        }
+
+        /* Özel District Badge - Okunabilirlik için */
+        .badge-district {
+            background-color: #f0f2f5;
+            color: #2c3e50;
+            border: 1px solid rgba(0,0,0,0.1);
+            font-weight: 600;
+            padding: 0.5rem 0.8rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .badge-near-you {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            background-color: #43cc29;
+            color: white;
+            box-shadow: 0 4px 10px rgba(67, 204, 41, 0.4);
+            font-weight: bold;
+        }
+
+        /* Input Grubu Morph Etkisi */
+        .search-container .input-group {
+            background: var(--morph-bg);
+            box-shadow: inset 5px 5px 10px var(--morph-shadow-dark), inset -5px -5px 10px var(--morph-shadow-light);
+            border-radius: 50px;
+            padding: 5px;
+        }
+
+        .search-container input {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding-left: 25px;
+        }
+
+        .navbar {
+            background-color: var(--morph-bg) !important;
+            box-shadow: 0 2px 15px var(--morph-shadow-dark);
+        }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Sustainable Market</a>
+            <a class="navbar-brand fw-bold text-primary fs-4" href="/main">
+                <i class="bi bi-shop-window me-2"></i>Sustainable Market
+            </a>
 
-            <div class="ms-auto">
-                <a href="/consumer/profile" class="btn btn-outline-light btn-sm me-2">Profile</a>
-                <a href="/cart" class="btn btn-outline-secondary btn-sm">Cart</a>
-                <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <a href="/consumer/profile" class="btn btn-light shadow-sm rounded-pill px-3">
+                    <i class="bi bi-person-circle me-1"></i> Profile
+                </a>
+                <a href="/cart" class="btn btn-secondary shadow-sm rounded-pill px-3 position-relative">
+                    <i class="bi bi-cart3"></i> Cart
+                </a>
+                <a href="/logout" class="btn btn-outline-danger btn-sm border-0 ms-2">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
             </div>
         </div>
     </nav>
-    <div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-lg-10 mx-auto"></div>
-        <h2>Welcome, <%= user.name %>
-        </h2>
-        <p class="text-muted mb-1">Find discounted products near you.</p>
-        <p class="mb-0">
-            <span class="badge bg-secondary">City: <%= user.city %> </span>
-            <span class="badge bg-secondary">District: <%= user.district %></span>
-        </p>
-    </div>
-    </div>
 
-
-    <div class="row mb-4">
-        <div class="col">
-            <form action="/main" method="GET">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search products, e.g. magnum, milk, bread" name="keyword" value="<%= keyword || '' %>">
-                    <button class="btn btn-primary" type="submit">
-                        Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="row mb-3 justify-content-center">
-        <div class="col-md-8 text-center">
-            <h4>Available Products</h4>
-        </div>
-    </div>
-
-    <% if (products.length === 0) { %>
-    <div class="alert alert-warning">
-        No products found.
-    </div>
-<% } else{ %>
-
-    <div class="row g-4">
-        <% for( let p of products ) { %>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100">
-
-                    <a href="/product/<%= p.id %>">
-                 <img 
-                src="/uploads/<%= p.image_url  %>" 
-                    class="card-img-top product-img" 
-                 alt="<%= p.title %>"
-                    >
-                </a>
-
-                    <div class="card-body d-flex flex-column">
-
-                        <h5 class="card-title">
-                <a href="/product/<%= p.id %>" class="text-decoration-none text-dark">
-                        <%= p.title %>
-                    </a>
-                        </h5>
-
-                        <p class="mb-1 text-muted">
-                            <%= p.market %> - <%= p.district %>
-                        </p>
-                        
-                       <% if (p.isSameDistrict) { %>
-            <span class="badge bg-success mb-2">Same District</span>
-                        <% } %>
-
-                        <p class="mb-1">
-                            <span class="text-decoration-line-through text-muted">
-                                <%= p.normal_price %> TL
-                            </span>
-                            <span class="fw-bold text-danger ms-2">
-                                <%= p.discounted_price %> TL
-                            </span>
-                        </p>
-
-                        <p class="mb-2 text-muted">Expires: <%= p.formattedExpirationDate %>
-                        </p>
-
-                        <% if (p.daysLeft === 0) { %>
-                         <p class="days-left mb-3">Expires today</p>
-                            <% } else { %>
-                         <p class="days-left mb-3"><%= p.daysLeft %> days left</p>
-                            <% } %>
-                        <a href="/cart/add/product/<%= p.id %>">
-                            <button class="btn btn-primary mt-auto">
-                                Add to Cart
-                            </button>
-                        </a>
-
+    <div class="container py-5">
+        
+        <div class="row mb-5 align-items-center">
+            <div class="col-md-7">
+                <h1 class="display-5 fw-bold mb-2">Hello, <%= user.name %>! 👋</h1>
+                <p class="text-muted fs-5">Great deals are waiting for you in your city.</p>
+            </div>
+            <div class="col-md-5 text-md-end">
+                <div class="d-inline-block bg-white p-3 rounded-4 shadow-sm text-start">
+                    <div class="small text-uppercase text-muted fw-bold mb-1" style="letter-spacing: 1px; font-size: 0.7rem;">Your Location</div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-geo-alt-fill text-danger me-2 fs-4"></i>
+                        <div>
+                            <span class="fw-bold d-block"><%= user.city %></span>
+                            <span class="text-secondary small"><%= user.district %></span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="row mb-5 justify-content-center">
+            <div class="col-lg-10 search-container">
+                <form action="/main" method="GET">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" placeholder="What are you looking for? (e.g. bread, fruit, pasta)" name="keyword" value="<%= keyword || '' %>">
+                        <button class="btn btn-primary rounded-pill px-5 shadow-sm" type="submit">
+                            <i class="bi bi-search me-2"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+            <h3 class="fw-bold mb-0">Fresh Offers</h3>
+            <span class="ms-3 badge bg-light text-dark shadow-none border"><%= products.length %> items</span>
+            <hr class="flex-grow-1 ms-3 opacity-10">
+        </div>
+
+        <% if (products.length === 0) { %>
+            <div class="card p-5 text-center shadow-sm">
+                <div class="display-1 text-muted mb-3"><i class="bi bi-search-heart"></i></div>
+                <h4 class="text-muted">No products found for this search.</h4>
+                <p>Try using broader keywords or explore all items.</p>
+                <a href="/main" class="btn btn-primary rounded-pill px-4 mt-2">Clear All Filters</a>
+            </div>
+        <% } else { %>
+
+            <div class="row g-4">
+                <% for( let p of products ) { %>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card h-100 overflow-hidden">
+                            
+                            <% if (p.isSameDistrict) { %>
+                                <span class="badge badge-near-you rounded-pill px-3 py-2">
+                                    <i class="bi bi-lightning-fill me-1"></i>NEAR YOU
+                                </span>
+                            <% } %>
+
+                            <a href="/product/<%= p.id %>" class="d-block overflow-hidden">
+                                <img src="/uploads/<%= p.image_url %>" class="card-img-top product-img" alt="<%= p.title %>">
+                            </a>
+
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="text-primary fw-bold small text-uppercase"><%= p.market %></span>
+                                    <span class="text-muted small"><i class="bi bi-calendar-event me-1"></i><%= p.daysLeft === 0 ? 'Today' : p.daysLeft + 'd' %></span>
+                                </div>
+
+                                <h5 class="card-title mb-3">
+                                    <a href="/product/<%= p.id %>" class="text-decoration-none text-dark fw-bold">
+                                        <%= p.title %>
+                                    </a>
+                                </h5>
+
+                                <div class="mb-3">
+                                    <div class="badge-district rounded-pill small">
+                                        <i class="bi bi-geo-alt-fill text-primary me-1"></i> <%= p.district %>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-2 mb-4 mt-auto">
+                                    <div class="price-new"><%= p.discounted_price %> TL</div>
+                                    <div class="price-old"><%= p.normal_price %> TL</div>
+                                </div>
+
+                                <a href="/cart/add/product/<%= p.id %>" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm">
+                                    <i class="bi bi-plus-lg me-1"></i> Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <% if (totalPages > 1) { %>
+                <nav class="mt-5 pt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %> mx-1">
+                            <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= currentPage - 1 %>">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %> mx-1">
+                                <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+
+                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %> mx-1">
+                            <a class="page-link rounded-circle shadow-sm" href="/main?keyword=<%= keyword %>&page=<%= currentPage + 1 %>">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             <% } %>
 
+        <% } %>
     </div>
 
-    <% } %>
-
-   <% if (totalPages > 1) { %>
-    <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
-                <a class="page-link" href="/main?keyword=<%= keyword %>&page=<%= currentPage - 1 %>">
-                    Previous
-                </a>
-            </li>
-
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                    <a class="page-link" href="/main?keyword=<%= keyword %>&page=<%= i %>">
-                        <%= i %>
-                    </a>
-                </li>
-            <% } %>
-
-            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
-                <a class="page-link" href="/main?keyword=<%= keyword %>&page=<%= currentPage + 1 %>">
-                    Next
-                </a>
-            </li>
-
-        </ul>
-    </nav>
-<% } %>
-
-
-
-    <footer class="bg-light border-top mt-5 py-3">
+    <footer class="mt-5 py-5 border-top">
         <div class="container text-center text-muted">
-            <small>&copy; 2026 Sustainable Market. All rights reserved.</small>
+            <h5 class="fw-bold text-primary mb-3">Sustainable Market</h5>
+            <p class="small mb-0">&copy; 2026 Sustainable Market. Saving the planet, one deal at a time.</p>
         </div>
     </footer>
-
 
 </body>
 

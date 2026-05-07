@@ -7,27 +7,28 @@
     <title>Shopping Cart</title>
 
     <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
         body {
-            background-color: #d9e3f1;
-            /* Theme default background */
+            background-color: #e6e9ef;
             min-height: 100vh;
             font-family: 'Nunito', sans-serif;
+            color: #444b40;
         }
 
         .cart-wrapper {
-            max-width: 900px;
-            margin: 60px auto;
+            max-width: 950px;
+            margin: 40px auto;
         }
 
-        /* Soft Neumorphic Card */
+        /* Neumorphic Card */
         .cart-card {
             border: none;
-            background-color: #d9e3f1;
-            border-radius: 2rem;
-            box-shadow: 10px 10px 20px rgba(55, 94, 148, 0.2),
-                -10px -10px 20px rgba(255, 255, 255, 0.5);
-            padding: 2.5rem;
+            background-color: #e6e9ef;
+            border-radius: 2.5rem;
+            box-shadow: 15px 15px 30px #b8bcc2, -15px -15px 30px #ffffff;
+            padding: 3rem;
         }
 
         .product-img {
@@ -35,31 +36,45 @@
             height: 90px;
             object-fit: cover;
             border-radius: 1.25rem;
-            /* Inner shadow for the "pressed" look on images */
-            box-shadow: inset 2px 2px 5px rgba(55, 94, 148, 0.3),
-                inset -3px -2px 5px rgba(255, 255, 255, 0.8);
+            box-shadow: 5px 5px 10px #b8bcc2, -5px -5px 10px #ffffff;
         }
 
+        /* Summary Box - Pressed/Inset Effect */
         .summary-box {
-            background-color: #f0f5fa;
-            border-radius: 1.5rem;
-            box-shadow: inset 2px 2px 8px rgba(55, 94, 148, 0.1);
+            background-color: #e6e9ef;
+            border-radius: 2rem;
+            box-shadow: inset 6px 6px 12px #b8bcc2, inset -6px -6px 12px #ffffff;
+        }
+
+        /* Okunabilirlik için koyu başlıklar */
+        .text-contrast {
+            color: #2c3e50 !important;
         }
 
         .navbar {
-            background-color: #d9e3f1;
-            padding: 1rem 0;
+            background-color: #e6e9ef !important;
+            box-shadow: 0 4px 10px rgba(184, 188, 194, 0.3);
+        }
+
+        /* Miktar Butonları Özelleştirme (Fonksiyonları bozmaz) */
+        .btn-outline-danger, .btn-outline-success {
+            border-radius: 12px;
+            border-width: 2px;
+            font-weight: bold;
+        }
+
+        .item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
     </style>
 </head>
 
 <body>
 
-
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-4" href="/main">
-                <span class="text-primary">SUSTANINABLE</span>MARKET
+            <a class="navbar-brand fw-bold fs-4 text-primary" href="/main">
+                SUSTAINABLE MARKET
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
                 <span class="navbar-toggler-icon"></span>
@@ -67,7 +82,7 @@
 
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link px-3" href="/main">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 fw-bold" href="/main">Shop</a></li>
                 </ul>
                 <div class="d-flex align-items-center">
                     <a href="/logout">
@@ -78,87 +93,88 @@
         </div>
     </nav>
 
-    <!-- Cart Section -->
     <div class="container cart-wrapper">
         <div class="cart-card">
             <div class="row">
-                <!-- Items Column -->
                 <div class="col-lg-8 pe-lg-5">
-                    <h2 class="fw-bold mb-5 text-dark">Shopping Cart</h2>
+                    <h2 class="fw-bold mb-5 text-contrast">Shopping Cart</h2>
                     <div id="notification_div"></div>
+                    
                     <div id="container">
                         <% for( let item of cart) { %>
-                            <div class="item d-flex align-items-center justify-content-between mb-4 pb-4 border-bottom border-secondary-subtle"
+                            <div class="item d-flex align-items-center justify-content-between mb-4 pb-4"
                                 id="cart-row-<%= item.cart_id %>">
                                 <div class="d-flex align-items-center">
                                     <img src="/uploads/<%= item.image_url %>" alt="Product" class="product-img me-4">
                                     <div>
-                                        <h5 class="mb-1 fw-bold">
+                                        <h5 class="mb-2 fw-bold text-contrast">
                                             <%= item.title %>
                                         </h5>
-                                        <div class="mt-2">
-
-                                            <button class="btn btn-outline-danger"
+                                        <div class="mt-2 d-flex align-items-center gap-2">
+                                            <button class="btn btn-outline-danger btn-sm px-3"
                                                 onclick="changeQuantity('<%= item.cart_id %>', 'decrement', '<%= item.normal_price %>','<%= item.discounted_price %>')">-</button>
-                                            <b id="quantity-<%= item.cart_id %>">
+                                            
+                                            <b id="quantity-<%= item.cart_id %>" class="px-2 fs-5 text-contrast">
                                                 <%= item.quantity %>
                                             </b>
-                                            <button class="btn btn-outline-success" 
+                                            
+                                            <button class="btn btn-outline-success btn-sm px-3" 
                                                 onclick="changeQuantity('<%= item.cart_id %>', 'increment', '<%= item.normal_price %>','<%= item.discounted_price %>')">+</button>
 
-                                            </span>
-                                            <button onclick="removeItem('<%= item.cart_id %>')" class="btn btn-outline-danger">
-                                                Remove
+                                            <button onclick="removeItem('<%= item.cart_id %>')" class="btn btn-link text-danger fw-bold text-decoration-none ms-2 small">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="text-end">
-                                    <span class="discounted fw-bold fs-5 text-primary">$<%=
-                                            item.discounted_price*item.quantity %>
-                                    </span>
-                                    <span class="normal text-danger text-decoration-line-through">$<%=
-                                            item.normal_price*item.quantity %></span>
+                                    <div class="discounted fw-bold fs-4 text-primary" id="discounted-price-<%= item.cart_id %>">
+                                        $<%= item.discounted_price*item.quantity %>
+                                    </div>
+                                    <div class="normal text-muted text-decoration-line-through small" id="normal-price-<%= item.cart_id %>">
+                                        $<%= item.normal_price*item.quantity %>
+                                    </div>
                                 </div>
                             </div>
-                            <% } %>
+                        <% } %>
                     </div>
-                    <div class="mt-3">
-                        <a href="/main" class="text-primary text-decoration-none small fw-bold">← Continue
-                            Shopping</a>
+                    
+                    <div class="mt-4">
+                        <a href="/main" class="text-primary text-decoration-none fw-bold">
+                            <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+                        </a>
                     </div>
                 </div>
 
-                <!-- Summary Column -->
                 <div class="col-lg-4 mt-5 mt-lg-0">
                     <div class="summary-box p-4">
-                        <h4 class="fw-bold mb-4">Summary</h4>
+                        <h4 class="fw-bold mb-4 text-contrast">Summary</h4>
 
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Subtotal</span>
-                            <span class="total fw-semibold">$<%= total %></span>
+                            <span class="text-muted fw-bold small">Subtotal</span>
+                            <span class="total fw-bold text-contrast">$<%= total %></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Shipping</span>
+                            <span class="text-muted fw-bold small">Shipping</span>
                             <span class="text-success fw-bold">Free</span>
                         </div>
 
-
-                        <hr class="my-4">
+                        <hr class="my-4 opacity-10">
 
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <span class="fs-5 fw-bold">Total</span>
+                            <span class="fs-5 fw-bold text-contrast">Total</span>
                             <span class="total fs-3 fw-bold text-primary">$<%= total %> </span>
                         </div>
 
-                        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow" onclick="purchase()">
-                            Purchase
+                        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm" onclick="purchase()">
+                            Purchase <i class="bi bi-bag-check-fill ms-2"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <script src="js/cart.js"></script>
 </body>
 

@@ -2,36 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="bootstrap.css">
-</head>
-<body class="bg-primary bg-gradient d-flex align-items-center justify-content-center vh-100">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #e6e9ef; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    <div class="card shadow border-0 rounded-5 p-4" style="width: 100%; max-width: 400px;">
-        <div class="card-body">
-           
-            <h2 class="text-center mb-4">Login</h2>
-            <form method="POST" action="/login" novalidate>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
-                </div>
-                <div class="mb-4">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
-                </div>
-                <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">Log In</button>
-                <% if (error) { %>
-                <div class="alert alert-danger text-center py-2 mb-3 rounded-pill" role="alert" style="font-size: 0.9rem;">
-                    <%= error %>
-                </div>
-                <% } %>
-                
-                <div class="text-center">
-                    <a href="/register" class="text-success text-decoration-none small">Sign Up</a>
-                </div>
-            </form>
+        .login-card {
+            background-color: #e6e9ef;
+            border: none;
+            border-radius: 40px;
+            /* Neumorphic Shadows - More Pronounced */
+            box-shadow: 18px 18px 35px , -18px -18px 35px #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 3rem 2.5rem;
+        }
+
+        /* Title Visibility Fix */
+        .card-title-text {
+            font-weight: 800;
+            color: #2c3e50 !important; /* High contrast dark color */
+            text-transform: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: #444b40;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .form-control {
+            background-color: #e6e9ef !important;
+            border: none !important;
+            border-radius: 15px !important;
+            box-shadow: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff !important;
+            padding: 14px 20px;
+            color: #2c3e50 !important;
+        }
+
+        .btn-login {
+            background-color: #378dfc;
+            border: none;
+            border-radius: 50px;
+            padding: 14px;
+            font-weight: 700;
+            color: white !important;
+            box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 18px #b8bcc2, -8px -8px 18px #ffffff;
+            background-color: #2e7ae0;
+        }
+
+        .alert-error {
+            background-color: #fceae9;
+            color: #e52527;
+            border: none;
+            font-weight: 600;
+            border-radius: 15px;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: #378dfc;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card text-center">
+        <div class="login-icon">
+            <i class="bi bi-person-circle"></i>
         </div>
+        
+        <h2 class="card-title-text">Login</h2>
+        
+        <form method="POST" action="/login" novalidate>
+            <div class="mb-4 text-start">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" 
+                       value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" 
+                       value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
+            </div>
+
+            <% if (error) { %>
+            <div class="alert alert-error small py-2 mb-4" role="alert">
+                <%= error %>
+            </div>
+            <% } %>
+
+            <button type="submit" class="btn btn-login btn-primary w-100 mb-4">
+                Log In
+            </button>
+            
+            <div class="text-center">
+                <a href="/register" class="text-primary fw-bold text-decoration-none small">Sign Up</a>
+            </div>
+        </form>
     </div>
 
 </body>
