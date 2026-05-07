@@ -390,6 +390,65 @@ const totalPages = Math.ceil(totalProducts / limit);
   }
 });
 
+app.get("/product/:id", restrictToRole("consumer"), async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const consumerCity = req.session.user.city;
+
+    const [rows] = await db.query(
+      `SELECT 
+          p.id,
+          p.title,
+          p.stock,
+          p.normal_price,
+          p.discounted_price,
+          p.expiration_date,
+          p.image_url,
+          u.name AS market,
+          u.city AS city,
+          u.district AS district
+       FROM products p
+       JOIN users u ON p.market_id = u.id
+       WHERE p.id = ?
+         AND u.role = 'market'
+         AND u.city = ?
+         AND p.expiration_date >= CURDATE()`,
+      [productId, consumerCity]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send("Product not found.");
+    }
+
+    const product = rows[0];
+
+    const expirationDate = new Date(product.expiration_date);
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    expirationDate.setHours(0, 0, 0, 0);
+
+    const diffTime = expirationDate - today;
+    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    product.daysLeft = daysLeft;
+    product.formattedExpirationDate = expirationDate.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+
+    product.isSameDistrict = product.district === req.session.user.district;
+
+    res.render("product-detail", {
+      user: req.session.user,
+      product,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Product detail page failed.");
+  }
+});
+
 app.get("/cart", async (req, res) => {
   try {
     const consumerId = req.session.user.id;
