@@ -3,13 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Welcome - Sustainable Market</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #e6e9ef;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            color: #444b40;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-card {
+            background-color: #e6e9ef;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 20px 20px 60px #b8bcc2, -20px -20px 60px #ffffff;
+            padding: 5rem 2.5rem;
+            text-align: center;
+            max-width: 950px;
+            width: 100%;
+        }
+
+        .text-contrast {
+            color: #2c3e50 !important;
+        }
+
+        /* Logo Box with Image */
+        .main-logo-box {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 2.5rem;
+            background-color: #e6e9ef;
+            border-radius: 40px;
+            box-shadow: 10px 10px 20px #b8bcc2, -10px -10px 20px #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .main-logo-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(2px 2px 4px rgba(184, 188, 194, 0.6));
+        }
+
+        /* Action Cards (Consumer / Market) */
+        .action-card {
+            background-color: #e6e9ef;
+            border-radius: 30px;
+            padding: 2.5rem;
+            height: 100%;
+            text-decoration: none !important;
+            display: block;
+            box-shadow: 8px 8px 16px #b8bcc2, -8px -8px 16px #ffffff;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 15px 15px 30px #b8bcc2, -15px -15px 30px #ffffff;
+            border-color: rgba(55, 141, 252, 0.2);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-morph {
+            border-radius: 50px;
+            padding: 14px 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-morph-primary {
+            background-color: #378dfc;
+            color: white !important;
+            box-shadow: 5px 5px 15px rgba(55, 141, 252, 0.4);
+        }
+
+        .btn-morph-primary:hover {
+            background-color: #2e7ae0;
+            box-shadow: 7px 7px 20px rgba(55, 141, 252, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-morph-light {
+            background-color: #e6e9ef;
+            color: #7f8a99 !important;
+            box-shadow: 5px 5px 10px #b8bcc2, -5px -5px 10px #ffffff;
+        }
+
+        .btn-morph-light:hover {
+            box-shadow: inset 3px 3px 6px #b8bcc2, inset -3px -3px 6px #ffffff;
+        }
+
+        .footer-info {
+            margin-top: 5rem;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-    <h2>TEST END-POINTS</h2>
-    <li><a href="/market/dashboard">Dashboard</a></li>
-    <li><a href="/main">Consumer Page</a></li>
-    <li><a href="/login">Login</a></li>
-    <li><a href="/register">Register Page</a></li>
+
+    <div class="container hero-section">
+        <div class="welcome-card">
+            
+            <div class="main-logo-box">
+                <img src="/img/leaf.png" alt="Sustainable Market Logo" class="main-logo-img">
+            </div>
+
+            <h1 class="display-3 fw-bold text-contrast mb-3">Sustainable Market</h1>
+            <p class="lead text-muted mb-5 px-md-5">
+                Stop food waste and start saving. Access local discounted products and contribute to a greener planet today.
+            </p>
+
+            <div class="row g-4 mb-5 text-start">
+                <div class="col-md-6">
+                    <a href="/main" class="action-card">
+                        <i class="bi bi-cart-check-fill action-icon text-primary"></i>
+                        <h4 class="fw-bold text-contrast">I am a Consumer</h4>
+                        <p class="text-muted small mb-0">Discover discounted products near you, fill your cart, and prevent waste.</p>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="/market/dashboard" class="action-card">
+                        <i class="bi bi-shop action-icon text-success"></i>
+                        <h4 class="fw-bold text-contrast">I am a Merchant</h4>
+                        <p class="text-muted small mb-0">Manage your inventory, list products nearing expiration, and reach local buyers.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-4 border-top border-light d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a href="/login" class="btn btn-morph btn-morph-primary">Login</a>
+                <a href="/register" class="btn btn-morph btn-morph-light">Join Us</a>
+            </div>
+
+            <div class="footer-info">
+                <p class="mb-0">
+                    <i class="bi bi-stars text-warning me-1"></i> 
+                    Small steps for nature, big savings for you.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
