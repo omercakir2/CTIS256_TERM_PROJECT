@@ -4,101 +4,255 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #e6e9ef;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            color: #444b40;
+        }
+
+        .navbar {
+            background-color: #e6e9ef !important;
+            box-shadow: 0 4px 10px rgba(184, 188, 194, 0.3);
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background-color: #e6e9ef;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: none;
+            box-shadow: 10px 10px 20px #b8bcc2, -10px -10px 20px #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #7f8a99;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Table Design */
+        .table-container {
+            background-color: #e6e9ef;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: inset 6px 6px 12px #b8bcc2, inset -6px -6px 12px #ffffff;
+            margin-top: 3rem;
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .table thead th {
+            border: none;
+            color: #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 1.5rem 1rem;
+        }
+
+        .table tbody td {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1.2rem 1rem;
+            color: #444b40;
+            font-weight: 600;
+        }
+
+        .prod-img-dash {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 3px 3px 6px #b8bcc2, -3px -3px 6px #ffffff;
+        }
+
+        .expired-row {
+            background-color: rgba(229, 37, 39, 0.03);
+            opacity: 0.8;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #e6e9ef;
+            box-shadow: 3px 3px 6px #b8bcc2, -3px -3px 6px #ffffff;
+            color: #2c3e50;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            box-shadow: inset 2px 2px 5px #b8bcc2, inset -2px -2px 5px #ffffff;
+            color: #378dfc;
+        }
+
+        .btn-action.delete:hover {
+            color: #e52527;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-    <header class="m_navbar">
-        <div class="m_nav_name">
-            <div class="m_name">Sustainable Discount Marketplace</div>
-            <div class="m_img_cont"><img src="/img/leaf.png" alt="leaf" class="m_img"></div>
-        </div>
-        <div class="m_nav_func">
-            <a class="m_dash active" href="#">Dashboard</a>
-            <a class="m_prod" href="/market/addproduct">Add Products</a>
-            <a id="m_prof" href="/profile/<%= market.id %>">
-                <div class="m_img_cont"><img src="/img/userupdt.png" alt="user" class="m_img"></div>
-                <div class="prof_name"><%= market.name %></div>
+
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/market/dashboard">
+                <i class="bi bi-leaf-fill me-2"></i>SUSTAINABLE MARKET
             </a>
-            <a class="m_logout" href="/logout">Logout</a>
+            
+            <div class="ms-auto d-flex align-items-center">
+                <a class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm me-2 active" href="/market/dashboard">Dashboard</a>
+                <a class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2" href="/market/addproduct">Add Product</a>
+                
+                <div class="dropdown ms-2">
+                    <a href="/market/profile/" class="d-flex align-items-center text-decoration-none">
+                        <span class="fw-bold text-dark me-2 d-none d-md-inline"><%= market.name %></span>
+                        <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                            <i class="bi bi-person-fill text-primary"></i>
+                        </div>
+                    </a>
+                </div>
+                
+                <a class="btn btn-outline-danger btn-sm border-0 ms-3" href="/logout">Logout</a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="m_dashboard">
-        <div class="m_info">
-            <div id="m_box_welc">
-                <div class="m_box_img_cont"><img src="/img/box.png" alt="box" class="m_img"></div>
-                <h2>Market Dashboard</h2>
+    <main class="dashboard-container">
+        <div class="row mb-5 align-items-center">
+            <div class="col-md-8">
+                <h2 class="fw-bold text-dark">Market Dashboard</h2>
+                <p class="text-muted mb-0">Welcome back, <span class="fw-bold text-primary"><%= market.name %></span>! Here is your current inventory status.</p>
             </div>
-            <div class="m_info_welc">
-                <span>Welcome Back, <span id="m_info_name"><%= market.name %></span>! Manage your inventory below.</span>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="/market/addproduct" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold">
+                    <i class="bi bi-plus-lg me-1"></i> NEW PRODUCT
+                </a>
             </div>
-            
-            <div class="m_pro_num_info">
-                <div class="m_stat_card">
-                    <div class="m_stat_number text-green"><%= totalproduct %></div>
-                    <div class="m_stat_label">TOTAL PRODUCTS</div>
-                </div>
-                <div class="m_stat_card">
-                    <div class="m_stat_number text-green"><%= activeproduct %></div>
-                    <div class="m_stat_label">ACTIVE</div>
-                </div>
-                <div class="m_stat_card">
-                    <div class="m_stat_number text-red" id="m_stat_expired"><%= expiredproduct %></div>
-                    <div class="m_stat_label">EXPIRED</div>
-                </div>
-                <div class="m_stat_card">
-                    <div class="m_stat_number text-blue"><%= totalstock %></div>
-                    <div class="m_stat_label">TOTAL STOCK</div>
-                </div>
-            </div>
-            
-            <div id="pro_inf_label"><h3>Your Products</h3></div>
         </div>
 
-        <div class="m_products">
-            <table>
-                <thead class="m_pro_head">
+        <div class="row g-4 mb-5">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-primary"><%= totalproduct %></div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-success"><%= activeproduct %></div>
+                    <div class="stat-label">Active</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-danger"><%= expiredproduct %></div>
+                    <div class="stat-label">Expired</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-info text-dark"><%= totalstock %></div>
+                    <div class="stat-label">Total Stock</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-3">
+            <h4 class="fw-bold m-0">Your Products</h4>
+            <hr class="flex-grow-1 ms-3 opacity-10">
+        </div>
+
+        <div class="table-container shadow-none">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <th>IMAGE</th>
-                        <th>TITLE</th>
-                        <th>STOCK</th>
-                        <th>PRICE</th>
-                        <th>DISCOUNTED</th>
-                        <th>EXPIRES</th>
-                        <th>STATUS</th>
-                        <th class="m_action_head">ACTION</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Expires</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for( let p of product) { %>
-                    <% if( p.isActive ) { %>  
-                        <tr>
-                    <% } else { %>
-                        <tr class="expired_row">
+                        <tr class="<%= p.isActive ? '' : 'expired-row' %>">
+                            <td>
+                                <img src="/uploads/<%= p.image_url %>" alt="product" class="prod-img-dash">
+                            </td>
+                            <td><span class="fw-bold"><%= p.title %></span></td>
+                            <td><%= p.stock %></td>
+                            <td class="text-muted small">₺<%= p.normal_price %></td>
+                            <td><span class="text-success fw-bold">₺<%= p.discounted_price %></span></td>
+                            <td class="small"><%= new Date(p.expiration_date).toLocaleDateString('en-GB') %></td>
+                            <td>
+                                <% if( p.isActive ) { %>
+                                    <span class="status-badge bg-light text-success border border-success-subtle">Active</span>
+                                <% } else { %>
+                                    <span class="status-badge bg-light text-danger border border-danger-subtle">Expired</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a href="/market/product/edit/<%= p.id %>" class="btn-action shadow-none" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="/market/product/delete/<%= p.id %>" class="btn-action delete shadow-none" title="Delete" onclick="return confirm('Are you sure?')">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     <% } %>
-                        <td><div class="m_img_cont m_prod_img"><img src="/uploads/<%= p.image_url  %>" alt="product image" class="m_img" ></div></td>
-                        <td class="font-medium"><%= p.title %></td>
-                        <td><%= p.stock %></td>
-                        <td class="text-gray">₺<%= p.normal_price %></td>
-                        <td class="text-success font-medium">₺<%= p.discounted_price %></td>
-                        <td><%= new Date(p.expiration_date).toLocaleDateString('en-GB') %></td>
-                        <% if( p.isActive ) { %>
-                            <td><span class="m_pro_active">Active</span></td>
-                        <% } else { %>
-                            <td><span class="m_pro_expired">Expired</span></td>
-                        <% } %>
-                        <td>
-                            <div class="m_action_container">
-                                <a href="/market/product/edit/<%= p.id %>" class="m_prod_act"><img src="/img/edit.jpg" alt="edit"></a>
-                                <a href="/market/product/delete/<%= p.id %>" class="m_prod_act"><img src="/img/delete.png" alt="delete"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <% } %>
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </main>
+
+    <footer class="py-5 text-center text-muted">
+        <small>&copy; 2026 Sustainable Market Dashboard</small>
+    </footer>
+
 </body>
 </html>
