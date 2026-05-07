@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.title %></title>
+
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/consumer-main.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/main">🌿 Sustainable Marketplace</a>
+
+            <div class="ms-auto">
+                <a href="/main" class="btn btn-outline-light btn-sm me-2">Back to Products</a>
+                <a href="/cart" class="btn btn-outline-light btn-sm me-2">Cart</a>
+                <a href="/logout" class="btn btn-light btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+
+        <div class="row g-4 align-items-start">
+
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm">
+                    <img 
+                        src="/uploads/<%= product.image_url || '/placeholder.jpg' %>" 
+                        class="img-fluid rounded" 
+                        alt="<%= product.title %>"
+                    >
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+
+                        <div class="mb-3">
+                            <% if (product.isSameDistrict) { %>
+                                <span class="badge bg-success mb-2">Same District</span>
+                            <% } %>
+                        </div>
+
+                        <h2 class="fw-bold mb-3"><%= product.title %></h2>
+
+                        <p class="text-muted mb-2">
+                            Sold by <strong><%= product.market %></strong>
+                        </p>
+
+                        <p class="text-muted mb-3">
+                            Location: <%= product.city %> / <%= product.district %>
+                        </p>
+
+                        <hr>
+
+                        <p class="mb-2">
+                            <span class="old-price fs-5"><%= product.normal_price %> TL</span>
+                            <span class="discount-price ms-3 fs-3"><%= product.discounted_price %> TL</span>
+                        </p>
+
+                        <p class="mb-2">
+                            Stock: <strong><%= product.stock %></strong>
+                        </p>
+
+                        <p class="mb-2">
+                            Expires: <strong><%= product.formattedExpirationDate %></strong>
+                        </p>
+
+                        <% if (product.daysLeft === 0) { %>
+                            <p class="days-left mb-4">Expires today</p>
+                        <% } else { %>
+                            <p class="days-left mb-4"><%= product.daysLeft %> days left</p>
+                        <% } %>
+
+                        <a href="/cart/add/product/<%= product.id %>" class="btn btn-warning fw-bold rounded-pill px-4">
+                            🛒 Add to Cart
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
