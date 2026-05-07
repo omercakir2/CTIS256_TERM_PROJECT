@@ -585,11 +585,11 @@ app.delete("/cart/clear", async (req, res) => {
 app.get("/market/dashboard", async (req, res) => {
   const market_id = req.session.user.id;
   const [ rowsM ] = await db.query(`SELECT * FROM users where id = ?`, [market_id]);
-  const [rows] = await db.query("SELECT * FROM products");
+  const [rows] = await db.query("SELECT * FROM products where market_id = ? ",[market_id]);
 
   if (rowsM.length === 0) return res.status(404).send("cannot find market user");
 
-  if (rows.length === 0) return res.status(404).send("product does not exist.");
+  // if (rows.length === 0) return res.status(404).send("product does not exist.");
 
   let totalstock=0;
   let totalproduct=0;
