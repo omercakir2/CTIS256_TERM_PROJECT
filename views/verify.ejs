@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account - 2FA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f7ff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .verify-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .icon-box { width: 70px; height: 70px; background: #e7f3ff; color: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; }
+        .form-control { border-radius: 10px; text-align: center; font-size: 1.5rem; letter-spacing: 5px; border: 2px solid #eee; }
+        .form-control:focus { border-color: #007bff; box-shadow: none; }
+        .btn-verify { background-color: #007bff; border: none; border-radius: 10px; padding: 0.8rem; font-weight: 600; margin-top: 1rem; transition: 0.3s; }
+        .btn-verify:hover { background-color: #0056b3; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="verify-card">
+    <div class="icon-box">
+        <i class="bi bi-shield-lock">🔒</i>
+    </div>
+    <h3 class="mb-1">Two-Step Verification</h3>
+    <p class="text-muted small mb-4">We sent a 6-digit code to your email. Please enter it below to continue.</p>
+
+    <% if (error) { %>
+        <div class="alert alert-danger py-2" role="alert" style="font-size: 0.85rem;">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <form action="/verify-2fa" method="POST">
+        <div class="mb-3">
+            <input type="text" name="code" class="form-control" maxlength="6" placeholder="000000" autocomplete="off" required autofocus>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 btn-verify">Verify & Log In</button>
+    </form>
+
+    <div class="mt-4">
+        <a href="/login" class="text-decoration-none small text-muted">← Back to Login</a>
+    </div>
+</div>
+
+</body>
+</html>

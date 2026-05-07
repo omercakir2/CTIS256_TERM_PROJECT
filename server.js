@@ -7,8 +7,22 @@ import { body, validationResult } from "express-validator";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import nodemailer from 'nodemailer';
+
+
+
 
 const app = express();
+
+const transporter = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "8e942f89390a35", 
+    pass: "f6b174e52b29fd",  
+  }
+});
+
 
 app.use(
   session({
@@ -124,6 +138,36 @@ app.post("/login", loginValidation, async (req, res) => {
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
     if (match) {
+      if (user.is_verified === 0) {
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
+        
+        req.session.pendingVerification = {
+            userId: user.id,
+            code: verificationCode,
+            tempUser: { 
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                city: user.city, 
+                 district: user.district 
+            }
+        };
+
+        await transporter.sendMail({
+            from: '"Sustainable Market" <no-reply@susmarket.com>',
+            to: user.email,
+            subject: "Your 2FA Verification Code",
+            text: `Your verification code is: ${verificationCode}`,
+            html: `<b>Your verification code is: ${verificationCode}</b>`
+        });
+
+        return res.redirect("/verify-2fa");
+    }
+
+
+
+
       req.session.user = {
         id: user.id,
         name: user.name,
@@ -193,7 +237,7 @@ app.post("/register", registerValidation, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password.trim(), saltRounds);
 
     await db.query(
-      "INSERT INTO users (email, password, role, name, city, district, is_verified) VALUES (?, ?, ?, ?, ?, ?, 1)",
+      "INSERT INTO users (email, password, role, name, city, district, is_verified) VALUES (?, ?, ?, ?, ?, ?, 0)",
       [email.trim(), hashedPassword, role, name, city, district]
     );
     res.redirect("/login");
@@ -209,6 +253,44 @@ app.post("/register", registerValidation, async (req, res) => {
       .send("An error occurred during registration. Please try again later.");
   }
 });
+
+
+app.get("/verify-2fa", (req, res) => {
+    if (!req.session.pendingVerification) return res.redirect("/login");
+    res.render("verify", { error: null }); 
+});
+
+
+app.post("/verify-2fa", async (req, res) => {
+    const { code } = req.body;
+    const pending = req.session.pendingVerification;
+
+    if (!pending) return res.redirect("/login");
+
+    if (parseInt(code) === pending.code) {
+
+        await db.query("UPDATE users SET is_verified = 1 WHERE id = ?", [pending.userId]);
+
+
+        req.session.user = pending.tempUser;
+        delete req.session.pendingVerification; 
+
+        return res.redirect(req.session.user.role === "consumer" ? "/main" : "/market/dashboard");
+    } else {
+        res.render("verify", { error: "Invalid code! Please check your email." });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
 
 app.get("/consumer/profile", (req, res) => {
   res.render("profile", {
