@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
     <style>
         body {
-            background-color: #e6e9ef; 
+            background-color: #e6e9ef;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -22,7 +23,7 @@
             border: none;
             border-radius: 40px;
             /* Neumorphic Shadows - More Pronounced */
-            box-shadow: 18px 18px 35px , -18px -18px 35px #ffffff;
+            box-shadow: 18px 18px 35px, -18px -18px 35px #ffffff;
             width: 100%;
             max-width: 420px;
             padding: 3rem 2.5rem;
@@ -31,7 +32,8 @@
         /* Title Visibility Fix */
         .card-title-text {
             font-weight: 800;
-            color: #2c3e50 !important; /* High contrast dark color */
+            color: #2c3e50 !important;
+            /* High contrast dark color */
             text-transform: none;
             margin-bottom: 1.5rem;
         }
@@ -84,43 +86,51 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="login-card text-center">
         <div class="login-icon">
             <i class="bi bi-person-circle"></i>
         </div>
-        
+
         <h2 class="card-title-text">Login</h2>
-        
+
         <form method="POST" action="/login" novalidate>
             <div class="mb-4 text-start">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" 
-                       value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
+                <input type="email" class="form-control" name="email"
+                    value="<%= typeof formData !== 'undefined' ? formData.email : '' %>">
             </div>
 
             <div class="mb-4 text-start">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" 
-                       value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
+                <input type="password" class="form-control" name="password"
+                    value="<%= typeof formData !== 'undefined' ? formData.password : '' %>">
             </div>
 
             <% if (error) { %>
-            <div class="alert alert-error small py-2 mb-4" role="alert">
-                <%= error %>
-            </div>
-            <% } %>
+                <div class="alert alert-error small py-2 mb-4" role="alert">
+                    <%= error %>
+                </div>
+                <% } %>
 
-            <button type="submit" class="btn btn-login btn-primary w-100 mb-4">
-                Log In
-            </button>
-            
-            <div class="text-center">
-                <a href="/register" class="text-primary fw-bold text-decoration-none small">Sign Up</a>
-            </div>
+                    <button type="submit" class="btn btn-login btn-primary w-100 mb-4 " onclick="disableButton()">
+                        Log In
+                    </button>
+
+                    <div class="text-center">
+                        <a href="/register" class="text-primary fw-bold text-decoration-none small">Sign Up</a>
+                    </div>
         </form>
     </div>
 
 </body>
+<script>
+    function disableButton(){
+        const btn = document.querySelector('.btn');
+        btn.classList.add('disabled');
+    }
+</script>
+
 </html>
