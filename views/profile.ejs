@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
 
     <link rel="stylesheet" href="/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
     <style>
         body {
             background-color: #e6e9ef;
@@ -56,7 +57,7 @@
             opacity: 0.7;
             cursor: not-allowed;
             box-shadow: none !important;
-            background-color: rgba(0,0,0,0.02) !important;
+            background-color: rgba(0, 0, 0, 0.02) !important;
         }
 
         .btn-save {
@@ -84,22 +85,26 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-4 text-primary" href="<%= user.role === 'consumer' ? '/main' : '/market/dashboard' %>">
-                <i class="bi bi-shop-window me-2"></i>SUSTAINABLE MARKET
+            <a class="navbar-brand fw-bold fs-4 text-primary"
+                href="<%= user.role === 'consumer' ? '/main' : '/market/dashboard' %>">
+                <span class="text-success">Green<span class="text-body">Markt</span> </span>
+
             </a>
 
             <div class="ms-auto d-flex align-items-center">
-                <% if (user.role === 'consumer') { %>
+                <% if (user.role==='consumer' ) { %>
                     <a href="/main" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2">Main Page</a>
                     <a href="/cart" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2">Cart</a>
-                <% } else { %>
-                    <a href="/market/dashboard" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2">Dashboard</a>
-                <% } %>
-                <a href="/logout" class="btn btn-outline-danger btn-sm border-0 ms-2">Logout</a>
+                    <% } else { %>
+                        <a href="/market/dashboard"
+                            class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2">Dashboard</a>
+                        <% } %>
+                            <a href="/logout" class="btn btn-outline-danger btn-sm border-0 ms-2">Logout</a>
             </div>
         </div>
     </nav>
@@ -114,7 +119,7 @@
                             <i class="bi bi-person-gear"></i>
                         </div>
                         <h3 class="fw-bold text-contrast mb-1">
-                            <%= user.role === 'consumer' ? 'Edit Consumer Profile' : 'Edit Market Profile' %>
+                            <%= user.role==='consumer' ? 'Edit Consumer Profile' : 'Edit Market Profile' %>
                         </h3>
                         <p class="text-muted">
                             Update your account information.
@@ -123,75 +128,60 @@
 
                     <% if (error) { %>
                         <div class="alert alert-danger text-center mb-4 py-2">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %>
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <%= error %>
                         </div>
-                    <% } %>
+                        <% } %>
 
-                    <% if (success) { %>
-                        <div class="alert alert-success text-center mb-4 py-2">
-                            <i class="bi bi-check-circle-fill me-2"></i><%= success %>
-                        </div>
-                    <% } %>
+                            <% if (success) { %>
+                                <div class="alert alert-success text-center mb-4 py-2">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <%= success %>
+                                </div>
+                                <% } %>
 
-                    <form action="<%= user.role === 'consumer' ? '/consumer/profile' : '/market/profile' %>" method="POST">
+                                    <form
+                                        action="<%= user.role === 'consumer' ? '/consumer/profile' : '/market/profile' %>"
+                                        method="POST">
 
-                        <div class="mb-4">
-                            <label class="form-label">
-                                <%= user.role === 'consumer' ? 'Full Name' : 'Market Name' %>
-                            </label>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                class="form-control"
-                                value="<%= formData.name || '' %>"
-                                maxlength="20"
-                                placeholder="Enter name"
-                            >
-                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                <%= user.role==='consumer' ? 'Full Name' : 'Market Name' %>
+                                            </label>
+                                            <input type="text" name="name" class="form-control"
+                                                value="<%= formData.name || '' %>" maxlength="20"
+                                                placeholder="Enter name">
+                                        </div>
 
-                        <div class="mb-4">
-                            <label class="form-label">Email Address</label>
-                            <input 
-                                type="email" 
-                                class="form-control"
-                                value="<%= user.email %>"
-                                disabled
-                            >
-                            <div class="ms-2 mt-1">
-                                <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Email cannot be changed.</small>
-                            </div>
-                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                                            <div class="ms-2 mt-1">
+                                                <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Email
+                                                    cannot be changed.</small>
+                                            </div>
+                                        </div>
 
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <label class="form-label">City</label>
-                                <input 
-                                    type="text" 
-                                    name="city" 
-                                    class="form-control"
-                                    value="<%= formData.city || '' %>"
-                                    maxlength="20"
-                                    placeholder="City"
-                                >
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">District</label>
-                                <input 
-                                    type="text" 
-                                    name="district" 
-                                    class="form-control"
-                                    value="<%= formData.district || '' %>"
-                                    maxlength="20"
-                                    placeholder="District"
-                                >
-                            </div>
-                        </div>
+                                        <div class="row mb-4">
+                                            <div class="col-6">
+                                                <label class="form-label">City</label>
+                                                <input type="text" name="city" class="form-control"
+                                                    value="<%= formData.city || '' %>" maxlength="20"
+                                                    placeholder="City">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">District</label>
+                                                <input type="text" name="district" class="form-control"
+                                                    value="<%= formData.district || '' %>" maxlength="20"
+                                                    placeholder="District">
+                                            </div>
+                                        </div>
 
-                        <button type="submit" class="btn btn-save btn-primary w-100 mt-2">
-                            Save Changes <i class="bi bi-save2 ms-2"></i>
-                        </button>
+                                        <button type="submit" class="btn btn-save btn-primary w-100 mt-2">
+                                            Save Changes <i class="bi bi-save2 ms-2"></i>
+                                        </button>
 
-                    </form>
+                                    </form>
                 </div>
 
                 <div class="text-center mt-4">
@@ -205,4 +195,5 @@
     </div>
 
 </body>
+
 </html>
