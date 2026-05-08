@@ -15,18 +15,17 @@ import nodemailer from 'nodemailer';
 const app = express();
 
 const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+  service: "gmail",
   auth: {
-    user: "ba2d22a2355b6d", 
-    pass: "0c2dbac4b5e602",  
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS       
   }
 });
 
 
 app.use(
   session({
-    secret: "secretkey",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
@@ -593,7 +592,8 @@ app.get("/cart/add/product/:id", async (req, res) => {
       await db.query("update products set stock=? where id=?",[rowsProduct[0].stock-1,productId]);
     }
 
-    res.redirect("/main");
+    const backURL = req.get('Referrer') || '/'; 
+    res.redirect(backURL);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error Occurred!");
