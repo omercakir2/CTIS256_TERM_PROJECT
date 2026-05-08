@@ -40,32 +40,40 @@ CREATE TABLE IF NOT EXISTS carts (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+USE sustainable_market;
+
 -- ---------------------------------------------------------
--- 2. MOCK DATA (Password: password123)
+-- CLEAR EXISTING DATA (order matters due to FK constraints)
 -- ---------------------------------------------------------
+DELETE FROM carts;
+DELETE FROM products;
+DELETE FROM users;
 
--- MARKETS (ID: 1-4)
+-- Reset auto increment
+ALTER TABLE carts AUTO_INCREMENT = 1;
+ALTER TABLE products AUTO_INCREMENT = 1;
+ALTER TABLE users AUTO_INCREMENT = 1;
+
+-- ---------------------------------------------------------
+-- MARKETS (ID: 1-4) — Password: password123
+-- ---------------------------------------------------------
 INSERT INTO users (id, email, password, role, name, city, district, is_verified) VALUES
-(1, 'omer_market@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'market', 'Omer Express', 'Ankara', 'Bilkent', TRUE),
-(2, 'furkan_market@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'market', 'Furkan Market', 'Ankara', 'Cankaya', TRUE),
-(3, 'eren_market@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'market', 'Eren Grocery', 'Ankara', 'Bahcelievler', TRUE),
-(4, 'oguz_market@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'market', 'Oguz Gross', 'Istanbul', 'Besiktas', TRUE);
+(1, 'test_market@test.com',   '$2b$10$lJd14FoDgZmaRcptH/fct.FN9PKYKMELggqMXx69HVFwrCmzTaIE6', 'market', 'Market Express',  'Ankara',   'Bilkent',      TRUE),
+(2, 'furkan_consumer@test.com', '$2b$10$lJd14FoDgZmaRcptH/fct.FN9PKYKMELggqMXx69HVFwrCmzTaIE6', 'consumer', 'Furkan', 'Ankara',   'Cankaya',      TRUE),
+(3, 'eren_consumer@test.com',   '$2b$10$lJd14FoDgZmaRcptH/fct.FN9PKYKMELggqMXx69HVFwrCmzTaIE6', 'consumer', 'Eren',  'Ankara',   'Cankaya', TRUE),
+(4, 'oguz_consumer@test.com',   '$2b$10$lJd14FoDgZmaRcptH/fct.FN9PKYKMELggqMXx69HVFwrCmzTaIE6', 'consumer', 'Oguz',    'Ankara', 'Mamak',     TRUE),
+(5, 'omer_consumer@test.com',   '$2b$10$lJd14FoDgZmaRcptH/fct.FN9PKYKMELggqMXx69HVFwrCmzTaIE6', 'consumer', 'Omer',    'Ankara', 'Mamak',     TRUE);
 
--- CONSUMERS (ID: 5-8)
-INSERT INTO users (id, email, password, role, name, city, district, is_verified) VALUES
-(5, 'omer_customer@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'consumer', 'Omer Cakir', 'Ankara', 'Bilkent', TRUE),
-(6, 'furkan_customer@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'consumer', 'Furkan Yilmaz', 'Ankara', 'Cankaya', TRUE),
-(7, 'eren_customer@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'consumer', 'Eren Kaya', 'Ankara', 'Bahcelievler', TRUE),
-(8, 'oguz_customer@test.com', '$2b$10$8K1p/a0dL19v7GZOn5.uO.uF9vC6vPZJ8f1N7N/fE6BvK8B1vG5dy', 'consumer', 'Oguz Demir', 'Istanbul', 'Besiktas', TRUE);
 
--- PRODUCTS
-INSERT INTO products (id, market_id, title, stock, normal_price, discounted_price, expiration_date, image_url) VALUES
-(1, 1, 'Toblerone 100g', 25, 200.00, 120.00, '2026-05-22', 'placeholder.jpg'),
-(2, 1, 'Coca Cola 1L', 10, 45.00, 30.00, '2026-05-10', 'placeholder.jpg'),
-(3, 1, 'Milk 1L', 15, 35.00, 20.00, '2026-05-15', 'placeholder.jpg'),
-(4, 1, 'Expired Yogurt', 2, 50.00, 10.00, '2024-01-01', 'placeholder.jpg');
-
--- SAMPLE CART
-INSERT INTO carts (consumer_id, product_id, quantity) VALUES
-(5, 1, 2),
-(5, 2, 1);
+-- ── Market 1: Omer Express (Ankara / Bilkent) ──────────────────────────────
+INSERT INTO products (market_id, title, stock, normal_price, discounted_price, expiration_date, image_url) VALUES
+(1, 'Ekmek 500g',              30,  10.00,   6.00, '2026-05-09', 'product-1746100001000.jpg'),
+(1, 'Tam Yag Sut 1L',          20,  35.00,  22.00, '2026-05-14', 'product-1746100002000.jpg'),
+(1, 'Beyaz Peynir 400g',       15,  85.00,  55.00, '2026-05-20', 'product-1746100003000.jpg'),
+(1, 'Yumurta 10lu',            25,  60.00,  40.00, '2026-05-25', 'product-1746100004000.jpg'),
+(1, 'Zeytinyagi 500ml',        10, 220.00, 150.00, '2026-11-01', 'product-1746100005000.jpg'),
+(1, 'Makarna 500g',            40,  25.00,  15.00, '2026-12-01', 'product-1746100006000.jpg'),
+(1, 'Domates Salcasi 700g',    18,  55.00,  35.00, '2026-10-01', 'product-1746100007000.jpg'),
+(1, 'Ayran 500ml',             22,  18.00,  10.00, '2026-05-12', 'product-1746100008000.jpg'),
+(1, 'Cips Parti Boy 150g',     12,  45.00,  28.00, '2026-07-15', 'product-1746100009000.jpg'),
+(1, 'Portakal Suyu 1L',         8,  50.00,  30.00, '2026-05-11', 'product-1746100010000.jpg');

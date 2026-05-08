@@ -46,8 +46,8 @@ function updateRowTotal(cartId, normal_price, discounted_price, quantity) {
   const discounted_span = row.querySelector(".discounted");
   const normal_span = row.querySelector(".normal");
 
-  discounted_span.innerHTML = "$" + discounted_price * quantity;
-  normal_span.innerHTML = "$" + normal_price * quantity;
+  discounted_span.innerHTML =  discounted_price * quantity + "TL" ;
+  normal_span.innerHTML =  normal_price * quantity + "TL" ;
 }
 function updateGrandTotal() {
   // 1. Tüm indirimli fiyatları (tekil ürün fiyatları) ve tüm toplam göstergelerini seçiyoruz
@@ -62,7 +62,7 @@ function updateGrandTotal() {
     sum += price;
   });
 
-  const formattedTotal = "$" + sum.toFixed(2);
+  const formattedTotal =  sum.toFixed(2) + "TL" ;
   total_displays.forEach((display) => {
     display.textContent = formattedTotal;
   });
