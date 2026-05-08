@@ -592,7 +592,8 @@ app.get("/cart/add/product/:id", async (req, res) => {
       await db.query("update products set stock=? where id=?",[rowsProduct[0].stock-1,productId]);
     }
 
-    res.redirect("/main");
+    const backURL = req.get('Referrer') || '/'; 
+    res.redirect(backURL);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error Occurred!");
